@@ -6,8 +6,8 @@ const title = $('title'), icon = $('heroIconState'), emoji = $('heroEmojiState')
 const reactions = success.querySelector('.reactions');
 const { random } = gsap.utils;
 const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-// no PC o Não só foge do mouse; no celular, depois da primeira fuga, continua pulando sozinho
-const mouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const usesMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const REACH = 140;
 
 const HEART = 'M12 20s-7.2-4.4-9.6-8.9C0.6 7.6 2.3 4.4 5.6 3.9c2-0.3 3.8 0.7 6.4 3.2 2.6-2.5 4.4-3.5 6.4-3.2 3.3 0.5 5 3.7 3.2 7.2C19.2 15.6 12 20 12 20Z';
 const heartShape = confetti.shapeFromPath({ path: HEART, matrix: [0.8, 0, 0, 0.8, -9.6, -9.6] });
@@ -21,9 +21,9 @@ let split = SplitText.create(title, { type: 'words,chars' });
 let intro, dodgeTimer, done = false, hearts = 0;
 
 gsap.set('.stage', { opacity: 1 });
-updateEyes();
+lookAtNo();
 if (!calm) {
-  intro = gsap.timeline({ defaults: { duration: 0.6, ease: 'back.out(1.8)' }, onComplete: updateEyes })
+  intro = gsap.timeline({ defaults: { duration: 0.6, ease: 'back.out(1.8)' }, onComplete: lookAtNo })
     .from(icon, { scale: 0, rotation: -30, duration: 1.1, ease: 'elastic.out(1, 0.6)' })
     .from(split.chars, { y: 28, opacity: 0, rotation: 'random(-20, 20)', stagger: 0.035 }, '-=0.8')
     .from(yesBtn, { y: 24, opacity: 0, clearProps: 'transform,opacity' }, '-=0.3')
@@ -46,9 +46,8 @@ function moveNoButton(cursor){
 
   let pos;
   if (cursor) {
-    // o primeiro lugar fora do alcance do mouse ou, se não tiver, o mais longe
     let best = -1;
-    for (let i = 0; i < 40 && best < 170; i++) {
+    for (let i = 0; i < 40 && best < REACH + 30; i++) {
       const p = spot(), d = Math.hypot(area.left + p[0] + w / 2 - cursor.x, area.top + p[1] + h / 2 - cursor.y);
       if (!hitsYes(p) && d > best) [best, pos] = [d, p];
     }
@@ -60,14 +59,13 @@ function moveNoButton(cursor){
   const [left, top] = pos;
   gsap.to(noBtn, {
     left: left / area.width * 100 + '%', top, x: 0, xPercent: 0, rotation: calm ? 0 : 'random(-12, 12)',
-    duration: calm ? 0 : 0.35, ease: 'expo.out', overwrite: 'auto', onUpdate: updateEyes,
+    duration: calm ? 0 : 0.35, ease: 'expo.out', overwrite: 'auto', onUpdate: lookAtNo,
   });
   if (!calm) gsap.fromTo(noBtn, { scaleX: 1.2, scaleY: 0.8 }, { scaleX: 1, scaleY: 1, duration: 0.6, ease: 'elastic.out(1, 0.3)', overwrite: 'auto' });
-  if (!mouse) dodgeTimer ??= setInterval(moveNoButton, 220);
+  if (!usesMouse) dodgeTimer ??= setInterval(moveNoButton, 220);
 }
 
-// as pupilas do Sim seguem o Não
-function updateEyes(){
+function lookAtNo(){
   const no = center(noBtn);
   for (const { eye, x, y } of eyes) {
     const e = center(eye), angle = Math.atan2(no.y - e.y, no.x - e.x);
@@ -76,20 +74,20 @@ function updateEyes(){
   }
 }
 
-const cursorOf = e => mouse ? { x: e.clientX, y: e.clientY } : undefined;
+const cursorOf = e => usesMouse ? { x: e.clientX, y: e.clientY } : undefined;
 const dodge = e => { e.preventDefault(); moveNoButton(cursorOf(e)); };
 
 ['mousemove', 'touchmove', 'touchstart'].forEach(type => document.addEventListener(type, e => {
   const p = e.touches ? e.touches[0] : e;
   const no = center(noBtn);
-  if (p && Math.hypot(p.clientX - no.x, p.clientY - no.y) < 140) moveNoButton(cursorOf(p));
+  if (p && Math.hypot(p.clientX - no.x, p.clientY - no.y) < REACH) moveNoButton(cursorOf(p));
 }, { passive: true }));
 noBtn.addEventListener('pointerenter', e => moveNoButton(cursorOf(e)));
 noBtn.addEventListener('pointerdown', dodge);
 noBtn.addEventListener('click', dodge);
 addEventListener('resize', () => {
   if (noBtn.style.top) moveNoButton();
-  updateEyes();
+  lookAtNo();
 });
 
 yesBtn.addEventListener('click', () => {
@@ -124,17 +122,27 @@ function reveal(){
     .from(split.chars, { y: 30, opacity: 0, scale: 0.6, stagger: 0.025, duration: 0.6, ease: 'back.out(2.5)' }, 0.1)
     .from(success, { opacity: 0, y: 60, scale: 0.85, rotationX: -35, duration: 1.2 }, 0.25)
     .from('.success img', { scale: 1.3, duration: 1.8 }, '<')
-    .call(() => { heartWave(12); ambientHearts(); }, [], 1.5);
+    .call(() => { heartWave(12); ambientHearts(); enablePhotoTap(); }, [], 1.5);
   if (calm) tl.progress(1, true);
 }
 
-success.addEventListener('click', e => {
-  if (calm) return;
-  vibrate([15]);
-  const r = success.getBoundingClientRect();
-  for (let i = 0; i < 5; i++)
-    gsap.delayedCall(i * 0.08, floatHeart, [e.clientX - r.left + random(-16, 16), e.clientY - r.top]);
-});
+function enablePhotoTap(){
+  gsap.set(success, { transformOrigin: '50% 50%' });
+  const press = down => gsap.to(success, down
+    ? { scale: 0.97, duration: 0.12, ease: 'power2.out', overwrite: 'auto' }
+    : { scale: 1, duration: 0.45, ease: 'back.out(2.2)', overwrite: 'auto' });
+
+  success.addEventListener('pointerdown', () => press(true));
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => success.addEventListener(type, () => press(false)));
+  success.addEventListener('click', e => {
+    vibrate([15]);
+    const side = random([-1, 1]);
+    gsap.to(success, { keyframes: { rotation: [0, 1.2 * side, -0.8 * side, 0.4 * side, 0], easeEach: 'sine.inOut' }, duration: 0.45, overwrite: 'auto' });
+    const r = success.getBoundingClientRect();
+    for (let i = 0; i < 5; i++)
+      gsap.delayedCall(i * 0.08, floatHeart, [e.clientX - r.left + random(-16, 16), e.clientY - r.top]);
+  });
+}
 
 // o iPhone não tem navigator.vibrate; no iOS 18+ clicar num <input switch> faz o Taptic Engine vibrar
 function vibrate(pattern){
@@ -171,7 +179,6 @@ function ripple(el, size, delay = 0){
     { scale: 1, opacity: 0, duration: 1.3, delay, ease: 'expo.out', onComplete: () => ring.remove() });
 }
 
-// um coração subindo pela chamada, como as reações do FaceTime; o balanço alterna de lado
 function floatHeart(x, y){
   const i = hearts++, side = i % 2 ? 1 : -1, size = random(22, 42, 1), rise = random(2.4, 3.4);
   const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -196,7 +203,6 @@ function heartWave(count){
     gsap.delayedCall(i * 0.16 + random(0, 0.08), floatHeart, [w * random(0.14, 0.86), h * random(0.82, 1)]);
 }
 
-// depois da primeira leva, de vez em quando sobe mais um ou dois
 function ambientHearts(){
   gsap.delayedCall(random(2.8, 4.8), () => { heartWave(random(1, 2, 1)); ambientHearts(); });
 }
