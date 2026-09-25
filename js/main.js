@@ -19,7 +19,7 @@ if (!calm) {
     .from(icon, { scale: 0, rotation: -30, duration: 1.1, ease: 'elastic.out(1, 0.6)' })
     .from(split.chars, { y: 28, opacity: 0, rotation: 'random(-20, 20)', stagger: 0.035 }, '-=0.8')
     .from(yesBtn, { y: 24, opacity: 0, clearProps: 'transform,opacity' }, '-=0.3')
-    .from(noBtn, { y: 24, opacity: 0 }, '<0.1');
+    .from(noBtn, { y: 24, opacity: 0 }, '<0.15');
 }
 
 function moveNoButton(){
@@ -83,7 +83,8 @@ yesBtn.addEventListener('click', () => {
   if (done) return;
   done = true;
   clearInterval(dodgeTimer);
-  navigator.vibrate?.([25, 40, 25, 40, 60]);
+  if (navigator.vibrate) navigator.vibrate([25, 40, 25, 40, 60]);
+  else { haptic(); setTimeout(haptic, 110); setTimeout(haptic, 220); }
   burst();
 
   // tudo sai de cena: o Não cai, o ícone encolhe, as letras sobem
@@ -107,6 +108,16 @@ function reveal(){
     .from(success, { opacity: 0, y: 60, scale: 0.85, rotationX: -35, transformPerspective: 900, transformOrigin: '50% 100%', duration: 1.2 }, 0.25)
     .from('.success img', { scale: 1.3, duration: 1.8 }, '<')
     .call(cannons, [], 0.6);
+}
+
+// iPhone não tem navigator.vibrate; no iOS 18+ clicar num <input switch> dá um toque do Taptic Engine
+function haptic(){
+  const label = document.createElement('label');
+  label.style.display = 'none';
+  label.innerHTML = '<input type="checkbox" switch>';
+  document.head.append(label);
+  label.click();
+  label.remove();
 }
 
 const heart = confetti.shapeFromPath({
