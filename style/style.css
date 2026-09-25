@@ -1,13 +1,12 @@
 :root{
   color-scheme:light;
-  /* altura útil da tela (no Safari do iPhone o dvh já desconta as barras) */
+  /* altura útil: tudo escala com ela, do iPhone SE ao Pro Max */
   --h:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  /* tudo escala com essa altura: no iPhone 11 (~715px úteis no Safari) bate com o design original,
-     no SE (~550px) fica mais compacto e nos Pro Max ganha um pouco de folga */
-  --pad:clamp(0.75rem, calc(var(--h) * .045), 2rem);
+  --pad:clamp(.75rem, calc(var(--h) * .045), 2rem);
   --gap:clamp(1rem, calc(var(--h) * .051), 2.4rem);
   --hero:clamp(88px, calc(var(--h) * .182), 140px);
   --title:clamp(1.4rem, calc(var(--h) * .042), 1.85rem);
+  --dodge:clamp(170px, calc(var(--h) * .31), 260px);
   --btn:3.25rem;
 }
 @supports (height:100dvh){
@@ -15,8 +14,6 @@
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
-
-/* sem pull-to-refresh nem "elástico" do Safari enquanto a pessoa caça o Não */
 html{overscroll-behavior:none;}
 
 body{
@@ -24,90 +21,91 @@ body{
   height:100vh;
   height:100dvh;
   padding-block:env(safe-area-inset-top) env(safe-area-inset-bottom);
-  font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background:linear-gradient(160deg, #f4e9e6, #eae2f0 55%, #dfe8ef);
-  color:#5d5566;
   display:grid;
   place-items:center;
   overflow:hidden;
-  overscroll-behavior:none;
-  position:relative;
+  font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color:#5d5566;
+  background:linear-gradient(160deg, #f4e9e6, #eae2f0 55%, #dfe8ef);
   -webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;
   user-select:none;
   touch-action:none;
 }
 
-.scenery{position:absolute;inset:0;pointer-events:none;}
-.scenery svg{width:100%;height:100%;display:block;}
+.scenery{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.scenery svg{position:absolute;}
+.sky{top:0;left:0;width:min(50vw, 360px);}
+.sky.right{left:auto;right:0;}
+.hills{bottom:0;left:0;width:100%;height:31%;}
+.clouds{fill:#f6efe9;stroke:#e4d7ce;}
+.stars{fill:#cdbfd6;}
 
 .stage{
+  position:relative;
+  z-index:2;
   width:min(420px, 90vw);
   padding:var(--pad) 2rem;
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:var(--gap);
-  position:relative;
-  z-index:2;
-  /* o JS revela com animação; se ele não carregar, aparece sozinho em 3s */
+  /* o JS revela com animação; sem JS, aparece sozinho em 3s */
   opacity:0;
   animation:show 0s 3s forwards;
 }
 
-.hero{width:var(--hero);height:var(--hero);flex:none;position:relative;}
+.hero{position:relative;flex:none;width:var(--hero);height:var(--hero);}
 .hero-circle{
   position:absolute;
   inset:0;
+  display:grid;
+  place-items:center;
   border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   background:#f1e6ea;
   border:1.5px solid #e0cdd6;
   isolation:isolate;
 }
 .hero-circle svg{width:100%;height:100%;}
-/* anéis de "chamada chegando" */
 #heroIconState::before, #heroIconState::after{
   content:"";
   position:absolute;
   inset:-1.5px;
+  z-index:-1;
   border-radius:50%;
   border:2px solid #e7b7bd;
   opacity:0;
-  z-index:-1;
 }
 .hero-emoji{font-size:calc(var(--hero) * .46);line-height:1;}
 
 h1{
   margin:0;
-  text-align:center;
-  text-wrap:balance;
   font-size:var(--title);
   font-weight:600;
-  letter-spacing:-0.01em;
   line-height:1.3;
+  letter-spacing:-.01em;
+  text-align:center;
+  text-wrap:balance;
   color:#5a4f63;
 }
 
+/* a área de fuga do Não fica fora do layout, pra centralizar só o que aparece */
 .choices{
-  width:100%;
-  height:clamp(170px, calc(var(--h) * .31), 260px);
-  display:flex;
-  flex-direction:column;
   position:relative;
+  width:100%;
+  height:var(--dodge);
+  margin-bottom:calc(2 * var(--btn) + 2rem - var(--dodge));
 }
 
 button{
-  font-family:inherit;
+  height:var(--btn);
+  padding:0 1.3rem;
+  border:none;
+  border-radius:16px;
+  font:inherit;
   font-size:1.02rem;
   font-weight:600;
   line-height:1;
-  height:var(--btn);
-  border:none;
-  border-radius:16px;
-  padding:0 1.3rem;
   cursor:pointer;
   -webkit-touch-callout:none;
 }
@@ -117,39 +115,39 @@ button{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .5) 50%, transparent 70%);
   translate:-100% 0;
+  background:linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .5) 50%, transparent 70%);
   pointer-events:none;
 }
 
-/* hover/toque usam translate e scale separados: o transform é do GSAP e não pode ter transition,
-   senão o Sim fica atrasado na entrada e encosta no Não */
+/* hover e toque usam translate/scale porque o transform é do GSAP e não pode ter transition */
 #yes{
   z-index:1;
   display:inline-flex;
+  width:100%;
   align-items:center;
   justify-content:center;
-  gap:0.5rem;
-  background:linear-gradient(135deg, #ecc8cd, #e7b7bd);
+  gap:.5rem;
   color:#5f2f3a;
-  box-shadow:0 8px 20px rgba(180,140,150,0.25);
-  transition:translate .3s cubic-bezier(.34,1.56,.64,1), scale .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
+  background:linear-gradient(135deg, #ecc8cd, #e7b7bd);
+  box-shadow:0 8px 20px rgb(180 140 150 / .25);
+  transition:.3s cubic-bezier(.34, 1.56, .64, 1);
+  transition-property:translate, scale, box-shadow;
 }
 @media (hover:hover){
-  #yes:hover{translate:0 -2px;scale:1.03;box-shadow:0 12px 28px rgba(180,140,150,0.35);}
+  #yes:hover{translate:0 -2px;scale:1.03;box-shadow:0 12px 28px rgb(180 140 150 / .35);}
 }
-#yes:active{scale:0.96;}
-.yes-eyes{display:inline-flex;gap:5px;flex:none;}
+#yes:active{scale:.96;}
+.eyes{display:inline-flex;gap:5px;}
 .eye{
+  display:grid;
+  place-items:center;
   width:15px;
   height:15px;
   border-radius:50%;
-  background:#fff;
-  box-shadow:inset 0 0 0 1px rgba(95,47,58,0.25);
-  display:flex;
-  align-items:center;
-  justify-content:center;
   overflow:hidden;
+  background:#fff;
+  box-shadow:inset 0 0 0 1px rgb(95 47 58 / .25);
 }
 .pupil{width:6.5px;height:6.5px;border-radius:50%;background:#5f2f3a;}
 
@@ -159,21 +157,32 @@ button{
   left:50%;
   transform:translateX(-50%);
   white-space:nowrap;
-  background:#fbf7f5;
   color:#847a8c;
+  background:#fbf7f5;
   border:1px solid #e7ddec;
-  box-shadow:0 3px 10px rgba(140,120,150,0.08);
+  box-shadow:0 3px 10px rgb(140 120 150 / .08);
 }
 
-/* o quadrado da foto ocupa o que sobra da altura depois do emoji, do título (2 linhas) e dos espaços */
+/* a foto ocupa a altura que sobra depois do emoji, do título (2 linhas) e dos espaços */
 .success{
   flex:none;
   width:min(480px, 94vw, calc(var(--h) - 2 * var(--pad) - var(--hero) - 2 * var(--gap) - 2.6 * var(--title)));
   aspect-ratio:1;
   border-radius:28px;
-  box-shadow:0 18px 40px rgba(90,70,90,0.22);
+  box-shadow:0 18px 40px rgb(90 70 90 / .22);
+  cursor:pointer;
 }
-.success img{width:100%;height:100%;object-fit:cover;display:block;}
+.success img{display:block;width:100%;height:100%;object-fit:cover;}
+.reactions{position:absolute;inset:0;z-index:1;pointer-events:none;}
+.heart{position:absolute;top:0;left:0;}
+
+.ripple{
+  position:fixed;
+  z-index:1;
+  border:2px solid #e7b7bd;
+  border-radius:50%;
+  pointer-events:none;
+}
 
 @keyframes show{to{opacity:1;}}
 @keyframes drift{to{transform:translateX(16px);}}
@@ -183,18 +192,17 @@ button{
 @keyframes blink{0%, 94%, 100%{scale:1 1;} 97%{scale:1 .1;}}
 @keyframes shine{40%, to{translate:100% 0;}}
 
-/* animações decorativas só para quem não pediu movimento reduzido */
 @media (prefers-reduced-motion:no-preference){
   .clouds path{animation:drift 12s ease-in-out infinite alternate;}
-  .clouds path:nth-child(2){animation-duration:16s;animation-delay:-5s;}
-  .clouds path:nth-child(3){animation-duration:10s;animation-delay:-2s;}
+  .clouds path:nth-child(2){animation-duration:10s;animation-delay:-2s;}
+  .right .clouds path{animation-duration:16s;animation-delay:-5s;}
   .stars circle{
     transform-box:fill-box;
     transform-origin:center;
     animation:twinkle 2.4s ease-in-out infinite alternate;
   }
   .stars circle:nth-child(2n){animation-duration:3.2s;}
-  .stars circle:nth-child(3n){animation-delay:-1.2s;}
+  .right .stars circle{animation-delay:-1.2s;}
   .hero{animation:bob 4s ease-in-out infinite;}
   #heroIconState::before, #heroIconState::after{animation:ring 2.4s ease-out infinite;}
   #heroIconState::after{animation-delay:1.2s;}
