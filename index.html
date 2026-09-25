@@ -14,20 +14,29 @@
 <script defer src="js/main.js"></script>
 </head>
 <body>
-<div class="scenery">
-  <svg viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice">
-    <circle cx="330" cy="90" r="46" fill="#f3e6d8" opacity="0.55"/>
-    <path d="M0 620 C 80 580, 160 600, 240 570 C 300 550, 360 580, 400 560 L 400 800 L 0 800 Z" fill="#e3d7e8" opacity="0.55"/>
-    <path d="M0 680 C 90 650, 200 670, 300 640 C 340 630, 380 650, 400 645 L 400 800 L 0 800 Z" fill="#ecdfe6" opacity="0.7"/>
-    <g class="clouds" fill="#f6efe9" stroke="#e4d7ce">
-      <path d="M40 140 c-14 0-24-10-24-23 0-11 8-21 20-23 3-15 17-26 33-26 15 0 28 10 32 24 13 1 23 12 23 25 0 13-11 24-25 24 H40Z" opacity="0.8" stroke-width="1.5"/>
-      <path d="M300 210 c-11 0-19-8-19-18 0-9 6-16 15-18 2-12 13-20 26-20 12 0 22 8 25 19 10 1 18 9 18 19 0 10-9 19-20 19H300Z" opacity="0.75" stroke-width="1.3"/>
-      <path d="M60 300 c-9 0-16-7-16-15 0-8 5-14 12-15 2-10 11-17 22-17 10 0 18 6 21 16 8 1 15 8 15 16 0 8-7 16-17 16H60Z" opacity="0.7" stroke-width="1.2"/>
+<div class="scenery" aria-hidden="true">
+  <svg class="sky" viewBox="0 0 200 320">
+    <g class="clouds">
+      <path d="M40 140c-14 0-24-10-24-23 0-11 8-21 20-23 3-15 17-26 33-26 15 0 28 10 32 24 13 1 23 12 23 25 0 13-11 24-25 24H40Z" opacity=".8" stroke-width="1.5"/>
+      <path d="M60 300c-9 0-16-7-16-15 0-8 5-14 12-15 2-10 11-17 22-17 10 0 18 6 21 16 8 1 15 8 15 16 0 8-7 16-17 16H60Z" opacity=".7" stroke-width="1.2"/>
     </g>
-    <g class="stars" fill="#cdbfd6">
-      <circle cx="70" cy="80" r="2.2"/><circle cx="120" cy="150" r="1.6"/><circle cx="260" cy="60" r="1.8"/>
-      <circle cx="350" cy="220" r="2"/><circle cx="30" cy="240" r="1.5"/>
+    <g class="stars"><circle cx="70" cy="80" r="2.2"/><circle cx="120" cy="150" r="1.6"/><circle cx="30" cy="240" r="1.5"/></g>
+  </svg>
+  <svg class="sky right" viewBox="200 0 200 320">
+    <circle cx="330" cy="90" r="46" fill="#f3e6d8" opacity=".55"/>
+    <g class="clouds">
+      <path d="M300 210c-11 0-19-8-19-18 0-9 6-16 15-18 2-12 13-20 26-20 12 0 22 8 25 19 10 1 18 9 18 19 0 10-9 19-20 19H300Z" opacity=".75" stroke-width="1.3"/>
     </g>
+    <g class="stars"><circle cx="260" cy="60" r="1.8"/><circle cx="350" cy="220" r="2"/></g>
+  </svg>
+  <svg class="hills" viewBox="0 540 400 260" preserveAspectRatio="none">
+    <path d="M0 620C80 580 160 600 240 570C300 550 360 580 400 560V800H0Z" fill="#e3d7e8" opacity=".55"/>
+    <path d="M0 680C90 650 200 670 300 640C340 630 380 650 400 645V800H0Z" fill="#ecdfe6" opacity=".7"/>
+  </svg>
+  <svg width="0" height="0">
+    <linearGradient id="heart0" x2="0" y2="1"><stop stop-color="#ffc2d1"/><stop offset="1" stop-color="#ec6f8f"/></linearGradient>
+    <linearGradient id="heart1" x2="0" y2="1"><stop stop-color="#e6d8ff"/><stop offset="1" stop-color="#a68ae6"/></linearGradient>
+    <linearGradient id="heart2" x2="0" y2="1"><stop stop-color="#ffdccd"/><stop offset="1" stop-color="#f2998b"/></linearGradient>
   </svg>
 </div>
 
@@ -39,8 +48,8 @@
         <rect x="34" y="42" width="52" height="38" rx="12" fill="#fff" stroke="#d9c4cd" stroke-width="1.8"/>
         <circle cx="52" cy="60" r="4" fill="#5d5566"/>
         <circle cx="70" cy="60" r="4" fill="#5d5566"/>
-        <path d="M54 71 Q61 76 68 71" stroke="#5d5566" stroke-width="2" stroke-linecap="round"/>
-        <path d="M86 55 l14 -8 v26 l-14 -8 Z" fill="#e7b7bd" stroke="#d9a3ab" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M54 71Q61 76 68 71" stroke="#5d5566" stroke-width="2" stroke-linecap="round"/>
+        <path d="M86 55l14-8v26l-14-8Z" fill="#e7b7bd" stroke="#d9a3ab" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="hero-circle hero-emoji" id="heroEmojiState" hidden>😁</div>
@@ -50,7 +59,7 @@
 
   <div class="choices" id="choices">
     <button id="yes" class="shine">
-      <span class="yes-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></span>
+      <span class="eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></span>
       Sim
     </button>
     <button id="no">Não</button>
@@ -58,6 +67,7 @@
 
   <div class="success shine" id="success" hidden>
     <img src="img/facetime-gatinhos.jpg" alt="Chamada de FaceTime com gatinhos" decoding="async">
+    <div class="reactions" aria-hidden="true"></div>
   </div>
 </main>
 </body>
