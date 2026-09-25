@@ -1,9 +1,27 @@
-:root{color-scheme:light;}
+:root{
+  color-scheme:light;
+  /* altura útil da tela (no Safari do iPhone o dvh já desconta as barras) */
+  --h:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  /* tudo escala com essa altura: no iPhone 11 (~715px úteis no Safari) bate com o design original,
+     no SE (~550px) fica mais compacto e nos Pro Max ganha um pouco de folga */
+  --pad:clamp(0.75rem, calc(var(--h) * .045), 2rem);
+  --gap:clamp(1rem, calc(var(--h) * .051), 2.4rem);
+  --hero:clamp(88px, calc(var(--h) * .182), 140px);
+  --title:clamp(1.4rem, calc(var(--h) * .042), 1.85rem);
+  --btn:3.25rem;
+}
+@supports (height:100dvh){
+  :root{--h:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));}
+}
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 
+/* sem pull-to-refresh nem "elástico" do Safari enquanto a pessoa caça o Não */
+html{overscroll-behavior:none;}
+
 body{
   margin:0;
+  height:100vh;
   height:100dvh;
   padding-block:env(safe-area-inset-top) env(safe-area-inset-bottom);
   font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -12,9 +30,12 @@ body{
   display:grid;
   place-items:center;
   overflow:hidden;
+  overscroll-behavior:none;
   position:relative;
   -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  touch-action:none;
 }
 
 .scenery{position:absolute;inset:0;pointer-events:none;}
@@ -22,11 +43,11 @@ body{
 
 .stage{
   width:min(420px, 90vw);
-  padding:2rem;
+  padding:var(--pad) 2rem;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:2.3rem;
+  gap:var(--gap);
   position:relative;
   z-index:2;
   /* o JS revela com animação; se ele não carregar, aparece sozinho em 3s */
@@ -34,7 +55,7 @@ body{
   animation:show 0s 3s forwards;
 }
 
-.hero{width:130px;height:130px;position:relative;}
+.hero{width:var(--hero);height:var(--hero);flex:none;position:relative;}
 .hero-circle{
   position:absolute;
   inset:0;
@@ -45,8 +66,8 @@ body{
   background:#f1e6ea;
   border:1.5px solid #e0cdd6;
   isolation:isolate;
-  & svg{width:100%;height:100%;}
 }
+.hero-circle svg{width:100%;height:100%;}
 /* anéis de "chamada chegando" */
 #heroIconState::before, #heroIconState::after{
   content:"";
@@ -57,12 +78,13 @@ body{
   opacity:0;
   z-index:-1;
 }
-.hero-emoji{font-size:60px;line-height:1;}
+.hero-emoji{font-size:calc(var(--hero) * .46);line-height:1;}
 
 h1{
   margin:0;
   text-align:center;
-  font-size:1.85rem;
+  text-wrap:balance;
+  font-size:var(--title);
   font-weight:600;
   letter-spacing:-0.01em;
   line-height:1.3;
@@ -71,10 +93,9 @@ h1{
 
 .choices{
   width:100%;
-  min-height:220px;
+  height:clamp(170px, calc(var(--h) * .31), 260px);
   display:flex;
   flex-direction:column;
-  gap:0.85rem;
   position:relative;
 }
 
@@ -82,10 +103,13 @@ button{
   font-family:inherit;
   font-size:1.02rem;
   font-weight:600;
+  line-height:1;
+  height:var(--btn);
   border:none;
   border-radius:16px;
-  padding:1rem 1.3rem;
+  padding:0 1.3rem;
   cursor:pointer;
+  -webkit-touch-callout:none;
 }
 
 .shine{position:relative;overflow:hidden;isolation:isolate;}
@@ -98,22 +122,23 @@ button{
   pointer-events:none;
 }
 
+/* hover/toque usam translate e scale separados: o transform é do GSAP e não pode ter transition,
+   senão o Sim fica atrasado na entrada e encosta no Não */
 #yes{
   z-index:1;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   gap:0.5rem;
-  line-height:1;
   background:linear-gradient(135deg, #ecc8cd, #e7b7bd);
   color:#5f2f3a;
   box-shadow:0 8px 20px rgba(180,140,150,0.25);
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
-  @media (hover:hover){
-    &:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 12px 28px rgba(180,140,150,0.35);}
-  }
-  &:active{transform:scale(0.96);}
+  transition:translate .3s cubic-bezier(.34,1.56,.64,1), scale .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
 }
+@media (hover:hover){
+  #yes:hover{translate:0 -2px;scale:1.03;box-shadow:0 12px 28px rgba(180,140,150,0.35);}
+}
+#yes:active{scale:0.96;}
 .yes-eyes{display:inline-flex;gap:5px;flex:none;}
 .eye{
   width:15px;
@@ -130,7 +155,7 @@ button{
 
 #no{
   position:absolute;
-  top:76px;
+  top:calc(var(--btn) + 2rem);
   left:50%;
   transform:translateX(-50%);
   white-space:nowrap;
@@ -140,13 +165,15 @@ button{
   box-shadow:0 3px 10px rgba(140,120,150,0.08);
 }
 
+/* o quadrado da foto ocupa o que sobra da altura depois do emoji, do título (2 linhas) e dos espaços */
 .success{
-  width:min(480px, 94vw);
+  flex:none;
+  width:min(480px, 94vw, calc(var(--h) - 2 * var(--pad) - var(--hero) - 2 * var(--gap) - 2.6 * var(--title)));
   aspect-ratio:1;
   border-radius:28px;
   box-shadow:0 18px 40px rgba(90,70,90,0.22);
-  & img{width:100%;height:100%;object-fit:cover;display:block;}
 }
+.success img{width:100%;height:100%;object-fit:cover;display:block;}
 
 @keyframes show{to{opacity:1;}}
 @keyframes drift{to{transform:translateX(16px);}}
@@ -158,18 +185,16 @@ button{
 
 /* animações decorativas só para quem não pediu movimento reduzido */
 @media (prefers-reduced-motion:no-preference){
-  .clouds path{
-    animation:drift 12s ease-in-out infinite alternate;
-    &:nth-child(2){animation-duration:16s;animation-delay:-5s;}
-    &:nth-child(3){animation-duration:10s;animation-delay:-2s;}
-  }
+  .clouds path{animation:drift 12s ease-in-out infinite alternate;}
+  .clouds path:nth-child(2){animation-duration:16s;animation-delay:-5s;}
+  .clouds path:nth-child(3){animation-duration:10s;animation-delay:-2s;}
   .stars circle{
     transform-box:fill-box;
     transform-origin:center;
     animation:twinkle 2.4s ease-in-out infinite alternate;
-    &:nth-child(2n){animation-duration:3.2s;}
-    &:nth-child(3n){animation-delay:-1.2s;}
   }
+  .stars circle:nth-child(2n){animation-duration:3.2s;}
+  .stars circle:nth-child(3n){animation-delay:-1.2s;}
   .hero{animation:bob 4s ease-in-out infinite;}
   #heroIconState::before, #heroIconState::after{animation:ring 2.4s ease-out infinite;}
   #heroIconState::after{animation-delay:1.2s;}

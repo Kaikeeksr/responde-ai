@@ -1,0 +1,12 @@
+# config local do Claude Code (preview etc.)
+.claude/
+
+# lixo de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editores
+.vscode/
+.idea/
+*.swp
