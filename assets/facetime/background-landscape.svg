@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <style>
+    /* passos de 0,1s no mesmo relógio: a imagem é redesenhada 10x por segundo, não 60 */
+    @keyframes float { from { transform: translateX(-12%); } to { transform: translate(12%, -6%); } }
+    @media (prefers-reduced-motion: no-preference) {
+      .cloud { transform-box: fill-box; animation: float 22s steps(220) infinite alternate; }
+      .cloud:nth-child(2n) { animation-direction: alternate-reverse; }
+      .cloud:nth-child(2) { animation-delay: -9s; }
+      .cloud:nth-child(3) { animation-delay: -4s; }
+      .cloud:nth-child(4) { animation-delay: -13s; }
+      .cloud:nth-child(5) { animation-delay: -7s; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#fbefe9"/>
+      <stop offset=".45" stop-color="#f5e8f0"/>
+      <stop offset="1" stop-color="#ede3f5"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop offset=".55" stop-color="#fff1e4"/>
+      <stop offset="1" stop-color="#ffdcc6"/>
+    </radialGradient>
+    <symbol id="cloud" viewBox="2 4 108 58">
+      <path d="M22 60A18 18 0 1 1 28.6 25.2A26 26 0 0 1 78.2 22.6A20 20 0 1 1 88 60Z" fill="#fffaf8" stroke="#ecdbe3" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="cloud-wide" viewBox="2 4 120 56">
+      <path d="M18 58A14 14 0 1 1 21.9 30.6A22 22 0 0 1 57.5 14.7A20 20 0 0 1 93.6 29.8A16 16 0 1 1 104 58Z" fill="#fffaf8" stroke="#ecdbe3" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1400" cy="170" r="100" fill="#ffe9dc" opacity=".5"/>
+  <circle cx="1400" cy="170" r="64" fill="url(#sun)"/>
+  <path d="M0 690C220 630 470 680 760 640S1330 610 1600 650V900H0Z" fill="#ecd9ef"/>
+  <path d="M0 765C300 720 610 765 900 735S1390 712 1600 745V900H0Z" fill="#f6e5ed"/>
+  <g>
+    <use class="cloud" href="#cloud" x="70" y="150" width="190" height="102"/>
+    <use class="cloud" href="#cloud-wide" x="400" y="82" width="128" height="60"/>
+    <use class="cloud" href="#cloud" x="200" y="470" width="124" height="67"/>
+    <use class="cloud" href="#cloud-wide" x="1110" y="140" width="180" height="84"/>
+    <use class="cloud" href="#cloud" x="1330" y="400" width="116" height="62"/>
+  </g>
+</svg>

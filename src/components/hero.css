@@ -1,0 +1,34 @@
+/* .hero flutua com CSS; o GSAP anima só o .hero-circle, pra um não atropelar o outro */
+.hero{flex:none;width:var(--hero-size);height:var(--hero-size);}
+.hero-circle{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--hero-bg);
+  border:1.5px solid var(--hero-border);
+  isolation:isolate;
+}
+.hero-circle img{width:100%;height:100%;}
+.hero-emoji{font-size:calc(var(--hero-size) * .46);line-height:1;}
+
+.hero-circle::before, .hero-circle::after{
+  content:"";
+  position:absolute;
+  inset:-1.5px;
+  z-index:-1;
+  border-radius:50%;
+  border:2px solid var(--accent);
+  opacity:0;
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .hero{animation:bob 4s ease-in-out infinite;}
+  [data-phase="question"] .hero-circle::before,
+  [data-phase="question"] .hero-circle::after{animation:ring 2.4s ease-out infinite;}
+  [data-phase="question"] .hero-circle::after{animation-delay:1.2s;}
+}
+@keyframes bob{50%{translate:0 -6px;}}
+@keyframes ring{from{opacity:.7;} to{opacity:0;scale:1.6;}}

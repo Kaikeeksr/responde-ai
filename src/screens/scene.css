@@ -1,0 +1,15 @@
+/* data-phase no <body>: vazio enquanto carrega → question ⇄ answer */
+body:not([data-phase]) .stage{visibility:hidden;}
+body:not([data-phase="answer"]) .reward,
+body[data-phase="answer"] .choices{display:none;}
+
+.stage{
+  position:relative;
+  z-index:2;
+  width:min(420px, 90vw);
+  padding:var(--pad) 2rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:var(--gap);
+}

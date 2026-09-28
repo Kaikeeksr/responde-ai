@@ -1,0 +1,84 @@
+:root{
+  color-scheme:light;
+
+  /* cores: cada cena troca qualquer uma em scene.json → "theme" */
+  --bg:#fbefe9;
+  --ink:#5a4f63;
+  --accent:#e7b7bd;
+  --accent-soft:#ecc8cd;
+  --accent-ink:#5f2f3a;
+  --hero-bg:#f1e6ea;
+  --hero-border:#e0cdd6;
+  --muted:#847a8c;
+  --muted-bg:#fbf7f5;
+  --muted-border:#e7ddec;
+  --confetti:#f4a6b7, #e7b7bd, #c8b8dd, #b9a3e3, #ffd1dc;
+  --hearts:#ffc2d1 #ec6f8f, #e6d8ff #a68ae6, #ffdccd #f2998b; /* topo e base do degradê de cada coração */
+  --shadow:#8c6a7a;
+
+  /* medidas acompanham a altura útil da tela */
+  --vh:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  --pad:clamp(.75rem, calc(var(--vh) * .045), 2rem);
+  --gap:clamp(1rem, calc(var(--vh) * .051), 2.4rem);
+  --hero-size:clamp(88px, calc(var(--vh) * .182), 140px);
+  --title-size:clamp(1.4rem, calc(var(--vh) * .042), 1.85rem);
+  --dodge-height:clamp(170px, calc(var(--vh) * .31), 260px);
+  --btn-height:3.25rem;
+}
+@supports (height:100dvh){
+  :root{--vh:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));}
+}
+*{box-sizing:border-box;}
+html{overscroll-behavior:none;}
+
+body{
+  margin:0;
+  height:100vh;
+  height:100dvh;
+  padding-block:env(safe-area-inset-top) env(safe-area-inset-bottom);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  transition:background-color .5s ease;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;
+  user-select:none;
+  touch-action:none;
+}
+
+.btn{
+  height:var(--btn-height);
+  padding:0 1.3rem;
+  border:none;
+  border-radius:16px;
+  font:inherit;
+  font-size:1.02rem;
+  font-weight:600;
+  line-height:1;
+  cursor:pointer;
+  -webkit-touch-callout:none;
+}
+
+.shine{position:relative;overflow:hidden;isolation:isolate;}
+.shine::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  translate:-100% 0;
+  background:linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .5) 50%, transparent 70%);
+  pointer-events:none;
+}
+@keyframes shine{40%, to{translate:100% 0;}}
+
+.ripple{
+  position:fixed;
+  z-index:1;
+  width:360px;
+  aspect-ratio:1;
+  border:2px solid var(--accent);
+  border-radius:50%;
+  pointer-events:none;
+}

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800">
+  <style>
+    symbol * { vector-effect: non-scaling-stroke; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .shape { fill: #2c3a76; stroke: #7d8fd4; }
+    .hole { fill: #1c2553; stroke: #7d8fd4; }
+    .perf { fill: #1c2553; stroke: none; }
+    .line { fill: none; stroke: #7d8fd4; }
+    .warm { fill: #f1d49c; stroke: #f8e5bf; }
+    .lens-a { fill: #e38b7d; stroke: none; }
+    .lens-b { fill: #6fb6c4; stroke: none; }
+  </style>
+  <defs>
+    <linearGradient id="hall" x2="0" y2="1">
+      <stop stop-color="#19224b"/>
+      <stop offset=".55" stop-color="#243069"/>
+      <stop offset="1" stop-color="#2e3c7b"/>
+    </linearGradient>
+
+    <!-- ícones no mesmo traço: 48×48, contorno de 1.6px -->
+    <symbol id="reel" viewBox="0 0 48 48">
+      <circle class="shape" cx="24" cy="24" r="17"/>
+      <circle class="hole" cx="24" cy="14" r="4"/>
+      <circle class="hole" cx="33.5" cy="20.9" r="4"/>
+      <circle class="hole" cx="29.9" cy="32.1" r="4"/>
+      <circle class="hole" cx="18.1" cy="32.1" r="4"/>
+      <circle class="hole" cx="14.5" cy="20.9" r="4"/>
+      <circle class="hole" cx="24" cy="24" r="1.8"/>
+    </symbol>
+    <symbol id="ticket" viewBox="0 0 48 48">
+      <path class="shape" d="M9 14h30a3 3 0 0 1 3 3v3.5a3.5 3.5 0 0 0 0 7V31a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-3.5a3.5 3.5 0 0 0 0-7V17a3 3 0 0 1 3-3Z"/>
+      <path class="line" d="M31 18v12" stroke-dasharray="2 3"/>
+      <path class="warm" d="M19 19.5l1.2 2.9 3.1.2-2.4 2 .8 3-2.7-1.6-2.7 1.6.8-3-2.4-2 3.1-.2Z"/>
+    </symbol>
+    <symbol id="clapper" viewBox="0 0 48 48">
+      <rect class="shape" x="8" y="21" width="32" height="19" rx="3"/>
+      <path class="line" d="M13 29h14M13 34h9"/>
+      <g transform="rotate(-12 8 20)">
+        <rect class="shape" x="8" y="13" width="32" height="7" rx="2"/>
+        <path class="line" d="M16 13l-4 7M24 13l-4 7M32 13l-4 7M40 13l-4 7"/>
+      </g>
+    </symbol>
+    <symbol id="star" viewBox="0 0 48 48">
+      <path class="warm" d="M24 9.5l3.65 9.48 10.14.54-7.89 6.4 2.62 9.81L24 30.2l-8.52 5.53 2.62-9.81-7.89-6.4 10.14-.54Z"/>
+    </symbol>
+    <symbol id="glasses" viewBox="0 0 48 48">
+      <path class="shape" d="M6 18h36v11a3 3 0 0 1-3 3h-9l-3-4.5h-6L18 32H9a3 3 0 0 1-3-3Z"/>
+      <rect class="lens-a" x="10" y="21" width="11" height="6.5" rx="1.5"/>
+      <rect class="lens-b" x="27" y="21" width="11" height="6.5" rx="1.5"/>
+    </symbol>
+    <symbol id="popcorn" viewBox="0 0 48 48">
+      <path class="warm" d="M13 22a4.5 4.5 0 0 1 3.5-7 5 5 0 0 1 8-3.5 5 5 0 0 1 8 2 4.5 4.5 0 0 1 3.5 8.5Z"/>
+      <path class="shape" d="M12 21h24l-3 19a2 2 0 0 1-2 1.7H17a2 2 0 0 1-2-1.7Z"/>
+      <path class="line" d="M19.5 21l1.4 20.5M28.5 21l-1.4 20.5"/>
+    </symbol>
+    <symbol id="drink" viewBox="0 0 48 48">
+      <path class="line" d="M26 13l3-6h5"/>
+      <path class="shape" d="M15 17h18l-2.2 22.2a2 2 0 0 1-2 1.8h-9.6a2 2 0 0 1-2-1.8Z"/>
+      <rect class="shape" x="13" y="13" width="22" height="5" rx="2"/>
+      <path class="line" d="M17.4 27h13.2"/>
+    </symbol>
+    <symbol id="film" viewBox="0 0 48 48">
+      <rect class="shape" x="7" y="14" width="34" height="20" rx="2.5"/>
+      <path class="line" d="M7 18.5h34M7 29.5h34M24 18.5v11"/>
+      <g class="perf">
+        <rect x="10" y="15.3" width="3" height="2" rx=".5"/><rect x="17" y="15.3" width="3" height="2" rx=".5"/><rect x="24" y="15.3" width="3" height="2" rx=".5"/><rect x="31" y="15.3" width="3" height="2" rx=".5"/>
+        <rect x="10" y="30.8" width="3" height="2" rx=".5"/><rect x="17" y="30.8" width="3" height="2" rx=".5"/><rect x="24" y="30.8" width="3" height="2" rx=".5"/><rect x="31" y="30.8" width="3" height="2" rx=".5"/>
+      </g>
+    </symbol>
+  </defs>
+
+  <rect width="400" height="800" fill="url(#hall)"/>
+  <g>
+    <use href="#popcorn" x="40" y="80" width="40" height="40"/>
+    <use href="#ticket" x="180" y="80" width="40" height="40"/>
+    <use href="#popcorn" x="320" y="80" width="40" height="40"/>
+    <use href="#drink" x="-30" y="180" width="40" height="40"/>
+    <use href="#clapper" x="110" y="180" width="40" height="40"/>
+    <use href="#clapper" x="250" y="180" width="40" height="40"/>
+    <use href="#drink" x="390" y="180" width="40" height="40"/>
+    <use href="#star" x="40" y="280" width="40" height="40"/>
+    <use href="#glasses" x="180" y="280" width="40" height="40"/>
+    <use href="#star" x="320" y="280" width="40" height="40"/>
+    <use href="#film" x="-30" y="380" width="40" height="40"/>
+    <use href="#reel" x="110" y="380" width="40" height="40"/>
+    <use href="#reel" x="250" y="380" width="40" height="40"/>
+    <use href="#film" x="390" y="380" width="40" height="40"/>
+    <use href="#popcorn" x="40" y="480" width="40" height="40"/>
+    <use href="#ticket" x="180" y="480" width="40" height="40"/>
+    <use href="#popcorn" x="320" y="480" width="40" height="40"/>
+    <use href="#drink" x="-30" y="580" width="40" height="40"/>
+    <use href="#clapper" x="110" y="580" width="40" height="40"/>
+    <use href="#clapper" x="250" y="580" width="40" height="40"/>
+    <use href="#drink" x="390" y="580" width="40" height="40"/>
+    <use href="#star" x="40" y="680" width="40" height="40"/>
+    <use href="#glasses" x="180" y="680" width="40" height="40"/>
+    <use href="#star" x="320" y="680" width="40" height="40"/>
+  </g>
+</svg>

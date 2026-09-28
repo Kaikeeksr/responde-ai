@@ -1,0 +1,19 @@
+{
+  "description": "pra matar a saudade",
+  "background": {
+    "portrait": "./background-portrait.svg",
+    "landscape": "./background-landscape.svg"
+  },
+  "question": {
+    "title": "FaceTime hoje?",
+    "icon": "./icon.svg",
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "answer": {
+    "title": "sabia que você não ia recusar",
+    "emoji": "😁",
+    "photo": "./photo.jpg",
+    "alt": "Chamada de FaceTime com gatinhos"
+  }
+}

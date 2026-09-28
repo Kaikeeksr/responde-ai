@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800">
+  <style>
+    /* passos de 0,1s no mesmo relógio: a imagem é redesenhada 10x por segundo, não 60 */
+    @keyframes float { from { transform: translateX(-12%); } to { transform: translate(12%, -6%); } }
+    @media (prefers-reduced-motion: no-preference) {
+      .cloud { transform-box: fill-box; animation: float 22s steps(220) infinite alternate; }
+      .cloud:nth-child(2n) { animation-direction: alternate-reverse; }
+      .cloud:nth-child(2) { animation-delay: -9s; }
+      .cloud:nth-child(3) { animation-delay: -4s; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#fbefe9"/>
+      <stop offset=".45" stop-color="#f5e8f0"/>
+      <stop offset="1" stop-color="#ede3f5"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop offset=".55" stop-color="#fff1e4"/>
+      <stop offset="1" stop-color="#ffdcc6"/>
+    </radialGradient>
+    <symbol id="cloud" viewBox="2 4 108 58">
+      <path d="M22 60A18 18 0 1 1 28.6 25.2A26 26 0 0 1 78.2 22.6A20 20 0 1 1 88 60Z" fill="#fffaf8" stroke="#ecdbe3" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="cloud-wide" viewBox="2 4 120 56">
+      <path d="M18 58A14 14 0 1 1 21.9 30.6A22 22 0 0 1 57.5 14.7A20 20 0 0 1 93.6 29.8A16 16 0 1 1 104 58Z" fill="#fffaf8" stroke="#ecdbe3" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+
+  <rect width="400" height="800" fill="url(#sky)"/>
+  <circle cx="330" cy="90" r="50" fill="#ffe9dc" opacity=".5"/>
+  <circle cx="330" cy="90" r="32" fill="url(#sun)"/>
+  <path d="M0 620C80 580 160 600 240 570C300 550 360 580 400 560V800H0Z" fill="#ecd9ef"/>
+  <path d="M0 680C90 650 200 670 300 640C340 630 380 650 400 645V800H0Z" fill="#f6e5ed"/>
+  <g>
+    <use class="cloud" href="#cloud" x="28" y="73" width="124" height="67"/>
+    <use class="cloud" href="#cloud-wide" x="278" y="168" width="92" height="43"/>
+    <use class="cloud" href="#cloud" x="44" y="262" width="72" height="39"/>
+  </g>
+</svg>

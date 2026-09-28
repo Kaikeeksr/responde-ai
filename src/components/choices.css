@@ -1,0 +1,7 @@
+/* a área de fuga do Não fica fora do layout, pra centralizar só o que aparece */
+.choices{
+  position:relative;
+  width:100%;
+  height:var(--dodge-height);
+  margin-bottom:calc(2 * var(--btn-height) + 2rem - var(--dodge-height));
+}

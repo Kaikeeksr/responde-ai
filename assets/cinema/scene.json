@@ -1,0 +1,34 @@
+{
+  "description": "filme, pipoca e você",
+  "background": {
+    "portrait": "./background-portrait.svg",
+    "landscape": "./background-landscape.svg"
+  },
+  "question": {
+    "title": "Cineminha hoje?",
+    "icon": "./icon.svg",
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "answer": {
+    "title": "sabia que você não ia recusar",
+    "emoji": "😁",
+    "photo": "./photo.jpeg",
+    "alt": "Cachorro e gato de óculos 3D com baldes de pipoca no cinema"
+  },
+  "reaction": "🍿",
+  "theme": {
+    "bg": "#19224b",
+    "ink": "#f6efe2",
+    "accent": "#ef9f5f",
+    "accent-soft": "#f7c98f",
+    "accent-ink": "#4a2410",
+    "hero-bg": "#2a3771",
+    "hero-border": "#45569a",
+    "muted": "#c7cfee",
+    "muted-bg": "#2a3771",
+    "muted-border": "#45569a",
+    "shadow": "#070b24",
+    "confetti": "#f7c98f, #ef9f5f, #fff1d6, #6fb6c4, #8fa2e6"
+  }
+}
