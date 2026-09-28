@@ -1,0 +1,11 @@
+.no{
+  position:absolute;
+  top:calc(var(--btn-height) + 2rem);
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  color:var(--muted);
+  background:var(--muted-bg);
+  border:1px solid var(--muted-border);
+  box-shadow:0 3px 10px color-mix(in srgb, var(--shadow) 7%, transparent);
+}

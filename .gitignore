@@ -1,6 +1,9 @@
 # config local do Claude Code (preview etc.)
 .claude/
 
+# saída do scripts/build.sh
+_site/
+
 # lixo de sistema
 .DS_Store
 Thumbs.db
