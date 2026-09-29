@@ -17,8 +17,21 @@
 }
 .swatch:active{scale:.94;}
 
+/* o "+": tracejado enquanto não tem cor; com cor livre, vira uma amostra dela com o "+" por cima */
+.swatch-custom{
+  display:grid;
+  place-items:center;
+  border:1.5px dashed color-mix(in srgb, var(--ink) 30%, transparent);
+  color:color-mix(in srgb, var(--ink) 60%, transparent);
+  background:color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.swatch-custom.is-filled{border:1px solid color-mix(in srgb, var(--ink) 12%, transparent);color:#3a3440;background:var(--fill);}
+.swatch-custom.is-filled.is-dark{color:#fff;}
+.swatch-custom svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+
+/* as duas fileiras e os emojis têm a mesma largura: os "+" ficam alinhados na borda direita */
 .swatches-backgrounds{grid-template-columns:repeat(6, minmax(0, 3rem));gap:.5rem;}
 .swatches-backgrounds .swatch{aspect-ratio:1;border-radius:12px;}
 
-.swatches-colors{display:flex;flex-wrap:wrap;gap:.85rem;}
+.swatches-colors{display:flex;justify-content:space-between;max-width:var(--choices-width);}
 .swatches-colors .swatch{width:2rem;height:2rem;border-radius:50%;}

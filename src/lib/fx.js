@@ -1,9 +1,16 @@
 import { gsap, confetti } from './vendor.js';
-import { h, center, cssList } from './dom.js';
+import { h, center, cssList, idle } from './dom.js';
 
 export const HEART = 'M12 20s-7.2-4.4-9.6-8.9C0.6 7.6 2.3 4.4 5.6 3.9c2-0.3 3.8 0.7 6.4 3.2 2.6-2.5 4.4-3.5 6.4-3.2 3.3 0.5 5 3.7 3.2 7.2C19.2 15.6 12 20 12 20Z';
 const heartShape = confetti.shapeFromPath({ path: HEART, matrix: [0.8, 0, 0, 0.8, -9.6, -9.6] });
 const emojiShapes = {};
+const emojiShape = reaction => (emojiShapes[reaction] ??= confetti.shapeFromText({ text: reaction, scalar: 2 }));
+
+// desenhar o emoji como imagem custa alguns ms: feito na folga, enquanto a pergunta aparece,
+// e não no toque do Sim, junto com a explosão e as animações de saída
+export function prepareBurst(reaction) {
+  if (reaction) idle(2000).then(() => emojiShape(reaction));
+}
 
 export function burst(el, reaction) {
   const { x, y } = center(el);
@@ -13,8 +20,7 @@ export function burst(el, reaction) {
   });
   if (reaction === false) return fire({ particleCount: 40, scalar: 1.2, shapes: ['circle'] });
   if (!reaction) return fire({ particleCount: 40, scalar: 1.2, shapes: [heartShape, heartShape, 'circle'] });
-  emojiShapes[reaction] ??= confetti.shapeFromText({ text: reaction, scalar: 2 });
-  fire({ particleCount: 16, scalar: 2, flat: true, shapes: [emojiShapes[reaction]] });
+  fire({ particleCount: 16, scalar: 2, flat: true, shapes: [emojiShape(reaction)] });
   fire({ particleCount: 24, scalar: 1.2, shapes: ['circle'] });
 }
 

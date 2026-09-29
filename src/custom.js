@@ -1,5 +1,6 @@
 import { loadScene } from './content.js';
 import { lastEmoji } from './lib/emoji.js';
+import { isHex, backgroundTheme, accentTheme } from './lib/color.js';
 
 // o editor (/criar) monta a pergunta em cima da cena assets/convite/ e ela vai inteira no link: /convite?c=…
 export const EDITOR = 'criar';
@@ -9,6 +10,8 @@ export const NO_REACTION = '-';
 
 const cut = max => value => value.trim().slice(0, max);
 const validId = value => (/^\w{1,40}$/.test(value) ? value : undefined);
+// fundo e cor: uma das opções do scene.json ou uma cor livre (#rrggbb)
+const validChoice = value => (isHex(value) ? value.toLowerCase() : validId(value));
 
 // a ordem aqui é a ordem dentro do link: campo novo só entra no fim, pra link antigo continuar valendo
 const FIELDS = {
@@ -19,8 +22,8 @@ const FIELDS = {
   reaction: value => (value === NO_REACTION ? value : lastEmoji(value)),
   gif: validId,
   reply: cut(MAX_LENGTH.reply),
-  bg: validId,
-  color: validId,
+  bg: validChoice,
+  color: validChoice,
 };
 
 export const fieldsOf = ({ question, answer, reaction, backgrounds }) => ({
@@ -39,11 +42,17 @@ export async function loadOptions() {
 
 export const findOption = (options, id) => options.find(option => option.id === id) ?? options[0];
 
+// cor livre vira uma opção montada na hora; o fundo livre não tem imagem e mantém a cor de destaque padrão
+export const findBackground = (backgrounds, value) =>
+  (isHex(value) ? { id: value, theme: backgroundTheme(value) } : findOption(backgrounds, value));
+export const findColor = (colors, value) =>
+  (isHex(value) ? { id: value, theme: accentTheme(value) } : findOption(colors, value));
+
 export async function loadCustom(query) {
   const { base, backgrounds, colors } = await loadOptions();
   const values = { ...fieldsOf(base), ...readQuery(query) };
-  const backdrop = findOption(backgrounds, values.bg);
-  const color = findOption(colors, values.color ?? backdrop.color);
+  const backdrop = findBackground(backgrounds, values.bg);
+  const color = findColor(colors, values.color ?? backdrop.color);
   return {
     background: backdrop.background,
     theme: { ...backdrop.theme, ...color.theme },

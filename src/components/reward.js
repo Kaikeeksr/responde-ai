@@ -57,7 +57,8 @@ export function createReward({ photo, alt, gif, reaction, onGif }) {
     return heart;
   }
 
-  function float(x, y) {
+  // `height` vem medido de quem chama: ler o layout aqui, uma vez por partícula, forçaria recálculo no meio das animações
+  function float(x, y, height) {
     const i = count++, side = i % 2 ? 1 : -1, size = random(22, 42, 1), rise = random(2.4, 3.4);
     const piece = particle(i);
     piece.style.setProperty('--size', `${size}px`);
@@ -66,7 +67,7 @@ export function createReward({ photo, alt, gif, reaction, onGif }) {
     gsap.set(piece, { x: x - size / 2, y: y - size / 2, rotation: -side * 12, scale: 0.3, opacity: 0 });
     gsap.timeline({ onComplete: () => piece.remove() })
       .to(piece, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(2.5)' })
-      .to(piece, { y: `-=${el.offsetHeight * random(0.55, 0.85)}`, duration: rise, ease: 'sine.out' }, 0)
+      .to(piece, { y: `-=${height * random(0.55, 0.85)}`, duration: rise, ease: 'sine.out' }, 0)
       .to(piece, { x: `+=${side * random(14, 28)}`, rotation: side * 12, duration: rise / 3, ease: 'sine.inOut', yoyo: true, repeat: 2 }, 0)
       .to(piece, { opacity: 0, scale: 0.8, duration: 0.7, ease: 'power1.in' }, rise - 0.7);
   }
@@ -74,7 +75,7 @@ export function createReward({ photo, alt, gif, reaction, onGif }) {
   function wave(amount) {
     const width = el.offsetWidth, height = el.offsetHeight;
     for (let i = 0; i < amount; i++)
-      gsap.delayedCall(i * 0.16 + random(0, 0.08), float, [width * random(0.14, 0.86), height * random(0.82, 1)]);
+      gsap.delayedCall(i * 0.16 + random(0, 0.08), float, [width * random(0.14, 0.86), height * random(0.82, 1), height]);
   }
 
   function drizzle() {
@@ -102,7 +103,7 @@ export function createReward({ photo, alt, gif, reaction, onGif }) {
       if (reaction === false) return;
       const r = el.getBoundingClientRect();
       for (let i = 0; i < 5; i++)
-        gsap.delayedCall(i * 0.08, float, [e.clientX - r.left + random(-16, 16), e.clientY - r.top]);
+        gsap.delayedCall(i * 0.08, float, [e.clientX - r.left + random(-16, 16), e.clientY - r.top, r.height]);
     }, { signal });
   }
 

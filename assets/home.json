@@ -4,6 +4,6 @@
   "scenes": ["facetime", "cinema"],
   "create": {
     "title": "Crie sua própria pergunta",
-    "description": "do jeitinho que você quiser"
+    "description": "do jeito que você quiser"
   }
 }

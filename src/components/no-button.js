@@ -24,10 +24,18 @@ export function createNoButton(label, { area, avoid, onMove }) {
     if (!usesMouse) restless ??= setInterval(flee, RESTLESS_MS);
   }
 
+  // mouse pode mandar centenas de eventos por segundo: mede a distância no máximo uma vez por quadro
+  let near, nearFrame;
+  const check = () => {
+    nearFrame = 0;
+    const c = center(el);
+    if (Math.hypot(near.clientX - c.x, near.clientY - c.y) < REACH) flee(cursorOf(near));
+  };
   const approach = e => {
     const p = e.touches ? e.touches[0] : e;
-    const c = center(el);
-    if (p && Math.hypot(p.clientX - c.x, p.clientY - c.y) < REACH) flee(cursorOf(p));
+    if (!p) return;
+    near = { clientX: p.clientX, clientY: p.clientY };
+    nearFrame ||= requestAnimationFrame(check);
   };
   const dodge = e => {
     e.preventDefault();
@@ -45,7 +53,8 @@ export function createNoButton(label, { area, avoid, onMove }) {
       addEventListener('resize', () => moved && flee(), { signal });
       signal.addEventListener('abort', () => {
         clearInterval(restless);
-        restless = undefined;
+        cancelAnimationFrame(nearFrame);
+        restless = nearFrame = undefined;
       });
       gsap.set(el, { clearProps: 'all' });
       return gsap.from(el, { y: 24, opacity: 0, duration: 0.6, ease: 'back.out(1.8)' });

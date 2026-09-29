@@ -1,4 +1,6 @@
+/* camada própria: ele é animado sem parar, e sem isso o navegador sobe e desce a camada a cada fuga */
 .no{
+  will-change:transform;
   position:absolute;
   top:calc(var(--btn-height) + 2rem);
   left:50%;
