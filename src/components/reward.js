@@ -1,17 +1,49 @@
 import { gsap } from '../lib/vendor.js';
-import { h, svg, calm, cssList } from '../lib/dom.js';
+import { h, svg, calm, cssList, play } from '../lib/dom.js';
+import { icon } from '../lib/icons.js';
 import { HEART, vibrate } from '../lib/fx.js';
+import { findGif } from '../lib/giphy.js';
+import { pickGif } from './gif-picker.js';
 
 const { random } = gsap.utils;
 
-// sobem corações (ou o emoji de "reaction") sozinhos e a cada toque
-export function createReward({ photo, alt, reaction }) {
-  const img = h('img', { src: photo, alt, decoding: 'async' });
+// `gif` é o id de um GIF do GIPHY; com `onGif`, o cartão ganha o botão de escolher/trocar o GIF;
+// `reaction: false` tira as partículas (o cartão só balança)
+export function createReward({ photo, alt, gif, reaction, onGif }) {
+  let media = photo && h('img', { src: photo, alt, decoding: 'async' });
   const reactions = h('div', { className: 'reactions', 'aria-hidden': 'true' });
-  const el = h('div', { className: 'reward shine' }, img, reactions);
-  let count = 0, taps, gradients;
+  const add = onGif && h('button', { type: 'button', className: 'icon-btn reward-add', 'aria-label': 'Escolher GIF' }, icon('plus'));
+  const el = h('div', { className: 'reward shine' }, media, reactions, add);
+  let count = 0, requested = 0, taps, gradients;
 
-  img.decode().catch(() => {}); // decodifica durante a pergunta, pra foto não engasgar a entrada
+  if (photo) media.decode().catch(() => {}); // decodifica durante a pergunta, pra foto não engasgar a entrada
+  const ready = gif ? findGif(gif).then(showGif, () => {}) : Promise.resolve();
+
+  function showGif({ url, title }) {
+    const img = h('img', { src: url, alt: title, decoding: 'async' }), id = ++requested;
+    return img.decode().then(() => {
+      if (id !== requested) return;
+      if (media) media.replaceWith(img);
+      else el.prepend(img);
+      media = img;
+      el.dataset.giphy = '';
+      if (el.offsetParent) play(gsap.from(img, { opacity: 0, scale: 1.15, duration: 0.8, ease: 'expo.out' }));
+      if (add) {
+        add.ariaLabel = 'Trocar GIF';
+        add.replaceChildren(icon('edit'));
+        play(gsap.from(add, { scale: 0.3, opacity: 0, duration: 0.5, ease: 'back.out(2.5)', clearProps: 'transform,opacity' }));
+      }
+    }, () => {});
+  }
+
+  add?.addEventListener('pointerdown', e => e.stopPropagation());
+  add?.addEventListener('click', async e => {
+    e.stopPropagation();
+    const chosen = await pickGif();
+    if (!chosen) return;
+    showGif(chosen);
+    onGif(chosen);
+  });
 
   function particle(i) {
     if (reaction) return h('span', { className: 'particle', textContent: reaction });
@@ -67,6 +99,7 @@ export function createReward({ photo, alt, reaction }) {
       vibrate([15]);
       const side = random([-1, 1]);
       gsap.to(el, { keyframes: { rotation: [0, 1.2 * side, -0.8 * side, 0.4 * side, 0], easeEach: 'sine.inOut' }, duration: 0.45, overwrite: 'auto' });
+      if (reaction === false) return;
       const r = el.getBoundingClientRect();
       for (let i = 0; i < 5; i++)
         gsap.delayedCall(i * 0.08, float, [e.clientX - r.left + random(-16, 16), e.clientY - r.top]);
@@ -75,18 +108,22 @@ export function createReward({ photo, alt, reaction }) {
 
   return {
     el,
+    ready,
     enter() {
-      gsap.set([el, img], { clearProps: 'all' });
+      gsap.set(media ? [el, media] : el, { clearProps: 'all' });
       // perspectiva fora do .from(): dentro dele ela seria animada até 0 e a foto daria um tranco
       gsap.set(el, { transformPerspective: 900, transformOrigin: '50% 100%' });
-      return gsap.timeline({ defaults: { ease: 'expo.out' } })
-        .from(el, { opacity: 0, y: 60, scale: 0.85, rotationX: -35, duration: 1.2 })
-        .from(img, { scale: 1.3, duration: 1.8 }, '<');
+      const timeline = gsap.timeline({ defaults: { ease: 'expo.out' } })
+        .from(el, { opacity: 0, y: 60, scale: 0.85, rotationX: -35, duration: 1.2 });
+      if (media) timeline.from(media, { scale: 1.3, duration: 1.8 }, '<');
+      return timeline;
     },
     celebrate() {
       if (calm) return;
-      wave(12);
-      drizzle();
+      if (reaction !== false) {
+        wave(12);
+        drizzle();
+      }
       reactToTaps();
     },
     leave() {

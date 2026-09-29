@@ -1,0 +1,97 @@
+.gif-picker[open]{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  margin:0;
+  padding:0;
+  border:none;
+  display:grid;
+  align-items:end;
+  justify-items:center;
+  overflow:hidden;
+  color:var(--ink);
+  background:none;
+}
+.gif-picker::backdrop{background:none;}
+.gif-backdrop{position:absolute;inset:0;background:color-mix(in srgb, var(--shadow) 45%, transparent);}
+
+.gif-sheet{
+  --soft:color-mix(in srgb, var(--ink) 64%, var(--bg));
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  width:min(100%, 34rem);
+  height:min(88dvh, 46rem);
+  padding:1rem 1rem 0;
+  border-radius:26px 26px 0 0;
+  background:var(--bg);
+  box-shadow:0 -12px 40px color-mix(in srgb, var(--shadow) 25%, transparent);
+}
+@media (min-width:40rem) and (min-height:36rem){
+  .gif-picker[open]{align-items:center;}
+  .gif-sheet{height:min(82vh, 44rem);border-radius:26px;}
+}
+
+.gif-results{
+  flex:1;
+  margin-top:.9rem;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+}
+.gif-grid{display:flex;align-items:flex-start;gap:.5rem;}
+.gif-column{flex:1;min-width:0;display:grid;gap:.5rem;}
+.gif-item{
+  position:relative;
+  display:block;
+  width:100%;
+  padding:0;
+  border:none;
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--hero-bg);
+  cursor:pointer;
+  -webkit-touch-callout:none;
+  transition:scale .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.gif-item img{display:block;width:100%;height:100%;object-fit:cover;}
+@media (hover:hover){
+  .gif-item:hover{scale:1.03;}
+}
+.gif-item:active{scale:.96;}
+.gif-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+/* contorno pra dentro: a lista rolável cortaria o de fora */
+.gif-item[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:-3px;}
+.gif-item[aria-pressed="true"]::after{
+  content:"✓";
+  position:absolute;
+  top:.4rem;
+  right:.4rem;
+  display:grid;
+  place-items:center;
+  width:1.6rem;
+  height:1.6rem;
+  border-radius:50%;
+  font-size:.9rem;
+  font-weight:700;
+  color:var(--accent-ink);
+  background:var(--accent);
+}
+
+.gif-status{margin:2rem 1rem;text-align:center;color:var(--soft);text-wrap:balance;}
+.gif-status:empty{display:none;}
+.gif-more{height:1px;}
+.gif-actions{padding-top:.9rem;}
+
+.gif-credit{
+  margin:0;
+  padding:.7rem 0 max(.7rem, env(safe-area-inset-bottom));
+  text-align:center;
+  font-size:.75rem;
+  letter-spacing:.02em;
+  color:var(--soft);
+}
+.gif-credit strong{color:var(--ink);letter-spacing:.06em;}

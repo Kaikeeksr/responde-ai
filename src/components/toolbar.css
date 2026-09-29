@@ -1,5 +1,5 @@
 .toolbar{
-  --size:clamp(2.5rem, calc(var(--vh) * .055), 2.75rem);
+  --icon-btn:clamp(2.5rem, calc(var(--vh) * .055), 2.75rem);
   --edge:clamp(.75rem, 2.5vmin, 1.5rem);
   position:fixed;
   top:max(var(--edge), env(safe-area-inset-top));
@@ -11,38 +11,4 @@
   pointer-events:none;
 }
 
-/* hover e toque usam translate/scale porque o transform é do GSAP; escondido até o enter() */
-.toolbar button{
-  visibility:hidden;
-  display:grid;
-  place-items:center;
-  width:var(--size);
-  height:var(--size);
-  padding:0;
-  border:1px solid var(--muted-border);
-  border-radius:50%;
-  color:var(--ink);
-  background:color-mix(in srgb, var(--muted-bg) 60%, transparent);
-  -webkit-backdrop-filter:blur(12px) saturate(1.4);
-  backdrop-filter:blur(12px) saturate(1.4);
-  box-shadow:0 3px 10px color-mix(in srgb, var(--shadow) 9%, transparent);
-  cursor:pointer;
-  pointer-events:auto;
-  -webkit-touch-callout:none;
-  transition:.3s cubic-bezier(.34, 1.56, .64, 1);
-  transition-property:translate, scale, box-shadow;
-}
-@media (hover:hover){
-  .toolbar button:hover{translate:0 -1px;box-shadow:0 6px 16px color-mix(in srgb, var(--shadow) 14%, transparent);}
-}
-.toolbar button:active{scale:.92;}
-.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
-.toolbar svg{
-  width:45%;
-  height:45%;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
+.toolbar .icon-btn{visibility:hidden;pointer-events:auto;}

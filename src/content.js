@@ -13,11 +13,11 @@ export function loadScene(name) {
   return scenes.get(name);
 }
 
-// caminhos que começam com "./" são relativos à pasta do json
+// caminhos que começam com "./" ou "../" são relativos à pasta do json
 async function fetchJSON(path) {
   const url = new URL(path, ROOT);
   const res = await fetch(url, { cache: 'no-cache' });
   if (!res.ok) throw new Error(`${path} não encontrado (${res.status})`);
   return JSON.parse(await res.text(), (_, value) =>
-    typeof value === 'string' && value.startsWith('./') ? new URL(value, url).href : value);
+    typeof value === 'string' && /^\.\.?\//.test(value) ? new URL(value, url).href : value);
 }

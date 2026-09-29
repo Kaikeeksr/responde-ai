@@ -1,0 +1,15 @@
+.action-bar{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) minmax(0, 1.5fr);
+  gap:.7rem;
+}
+
+/* centralizada por margem: o GSAP zera o translate quando anima o y */
+.scene-actions{
+  position:fixed;
+  inset:auto 0 max(.9rem, env(safe-area-inset-bottom));
+  z-index:3;
+  width:min(420px, calc(100% - 2rem));
+  margin-inline:auto;
+  visibility:hidden;
+}

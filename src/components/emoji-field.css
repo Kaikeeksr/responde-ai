@@ -1,0 +1,46 @@
+.emoji-field{display:flex;align-items:center;gap:.5rem;}
+
+.emoji-input{
+  flex:none;
+  width:3.25rem;
+  height:3.25rem;
+  padding:0;
+  border-radius:50%;
+  border:1.5px solid var(--hero-border);
+  background:var(--hero-bg);
+  font:inherit;
+  font-size:1.6rem;
+  line-height:1;
+  text-align:center;
+  caret-color:transparent;
+  cursor:pointer;
+  -webkit-user-select:text;
+  user-select:text;
+  transition:box-shadow .2s ease;
+}
+.emoji-input:focus{outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent);}
+
+.emoji-chips{display:flex;flex-wrap:wrap;gap:.1rem;}
+.emoji-chip{
+  display:grid;
+  place-items:center;
+  width:2rem;
+  height:2rem;
+  padding:0;
+  border:none;
+  border-radius:50%;
+  font-size:1.2rem;
+  line-height:1;
+  background:none;
+  cursor:pointer;
+  -webkit-touch-callout:none;
+  transition:scale .3s cubic-bezier(.34, 1.56, .64, 1), background-color .2s ease;
+}
+.emoji-none{color:color-mix(in srgb, var(--ink) 55%, transparent);}
+.emoji-none svg{width:1.2rem;height:1.2rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;}
+.emoji-chip[aria-pressed="true"]{background:color-mix(in srgb, var(--accent) 35%, transparent);}
+.emoji-chip:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+@media (hover:hover){
+  .emoji-chip:hover{scale:1.15;}
+}
+.emoji-chip:active{scale:.9;}

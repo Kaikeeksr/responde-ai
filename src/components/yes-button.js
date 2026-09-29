@@ -30,7 +30,6 @@ export function createYesButton(label, { reaction, onClick }) {
         y(Math.sin(angle) * GAZE);
       }
     },
-    // o clique vale até o signal ser abortado; cada entrada começa do estado original
     enter(signal) {
       el.addEventListener('click', accept, { once: true, signal });
       gsap.set(el, { clearProps: 'all' });

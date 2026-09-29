@@ -1,31 +1,38 @@
 import { gsap } from '../lib/vendor.js';
 import { h, applyTheme, decoded, play } from '../lib/dom.js';
-import { loadScene } from '../content.js';
 import { createBackdrop } from '../components/backdrop.js';
 import { createToolbar } from '../components/toolbar.js';
+import { createActionBar } from '../components/action-bar.js';
 import { createHero } from '../components/hero.js';
 import { createTitle } from '../components/title.js';
 import { createChoices } from '../components/choices.js';
 import { createReward } from '../components/reward.js';
 
-const { body } = document;
+const { body, documentElement: root } = document;
+const GIF_WAIT_MS = 2000;
 
-export async function createScene(name, { onExit }) {
-  const { background, question, answer, reaction, theme } = await loadScene(name);
+// com `onEdit` é a prévia de quem criou: escolhe o GIF e usa os botões de baixo no lugar dos de cima;
+// `published` é a cena logo depois de finalizar, já com o compartilhar à mostra
+export async function createScene(scene, { onExit, onEdit, onPublish, published }) {
+  const { background, question, answer, reaction, theme } = await scene;
   const stage = h('main', { className: 'stage' });
   const backdrop = createBackdrop(background);
-  const toolbar = createToolbar({ onBack: back });
+  const toolbar = !onEdit && createToolbar({ onBack: back });
+  const actions = onEdit && createActionBar({ className: 'scene-actions', next: 'Finalizar', onBack: onExit, onNext: onPublish });
   const hero = createHero(question);
   const title = createTitle(question.title);
   const choices = createChoices({ yes: question.yes, no: question.no, reaction, onAccept: accept });
-  const reward = createReward({ ...answer, reaction });
-  let current, resetTheme;
+  const reward = createReward({ ...answer, reaction, onGif: onEdit && chooseGif });
+  const frame = actions ? [actions] : published ? [toolbar.back, toolbar.share] : [toolbar.back];
+  const extras = toolbar && !published ? [toolbar.share] : [];
+  let current, resetTheme, gone;
 
+  if (actions) actions.next.disabled = !answer.gif;
   stage.append(hero.el, title.el, choices.el, reward.el);
   await decoded(backdrop.el, hero.el);
 
   const answering = () => body.dataset.phase === 'answer';
-  const visibleParts = () => (answering() ? [toolbar.share, reward, hero, title] : [choices, hero, title]);
+  const visibleParts = () => (answering() ? [...extras, reward, hero, title] : [choices, hero, title]);
 
   function ask() {
     body.dataset.phase = 'question';
@@ -35,9 +42,12 @@ export async function createScene(name, { onExit }) {
       .add(choices.enter(), '-=0.3'));
   }
 
+  // o GIF entra como uma foto: a resposta espera ele ficar pronto, até um limite
   function accept() {
     current.progress(1);
-    current = play(gsap.timeline({ onComplete: reveal }).add(visibleParts().map(part => part.leave())));
+    const gifReady = Promise.race([reward.ready, new Promise(done => setTimeout(done, GIF_WAIT_MS))]);
+    current = play(gsap.timeline({ onComplete: () => gifReady.then(() => gone || reveal()) })
+      .add(visibleParts().map(part => part.leave())));
   }
 
   function reveal() {
@@ -48,11 +58,10 @@ export async function createScene(name, { onExit }) {
       .add(hero.enter({ rotation: -60, duration: 1, ease: 'elastic.out(1, 0.5)' }))
       .add(title.enter({ y: 30, scale: 0.6, stagger: 0.025, ease: 'back.out(2.5)' }), 0.1)
       .add(reward.enter(), 0.25)
-      .add(toolbar.share.enter(), 0.6)
+      .add(extras.map(part => part.enter()), 0.6)
       .call(reward.celebrate, [], 1.5));
   }
 
-  // da resposta volta pra pergunta; da pergunta sai da cena
   function back() {
     if (!answering()) return onExit();
     current.kill();
@@ -65,22 +74,30 @@ export async function createScene(name, { onExit }) {
     ask();
   }
 
+  function chooseGif(gif) {
+    onEdit({ gif: gif.id });
+    actions.next.disabled = false;
+  }
+
   return {
     enter() {
       resetTheme = applyTheme(theme);
-      body.append(backdrop.el, toolbar.el, stage);
+      if (actions) root.dataset.actions = ''; // antes de medir a cena: reserva o espaço dos botões de baixo
+      body.append(backdrop.el, (actions || toolbar).el, stage);
       play(gsap.timeline()
         .from(backdrop.el, { autoAlpha: 0, duration: 0.6, ease: 'power1.out' })
-        .add(toolbar.back.enter(), 0.3));
+        .add(frame.map(part => part.enter()), 0.3));
       ask();
     },
     async leave() {
+      gone = true;
       current.kill();
       await play(gsap.timeline()
-        .add([...visibleParts(), toolbar.back].map(part => part.leave()))
+        .add([...visibleParts(), ...frame].map(part => part.leave()))
         .to(backdrop.el, { autoAlpha: 0, duration: 0.45, ease: 'power1.in' }, 0.1));
-      for (const el of [backdrop.el, toolbar.el, stage]) el.remove();
+      for (const el of [backdrop.el, (actions || toolbar).el, stage]) el.remove();
       delete body.dataset.phase;
+      delete root.dataset.actions;
       resetTheme();
     },
   };

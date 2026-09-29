@@ -5,13 +5,13 @@ export const HEART = 'M12 20s-7.2-4.4-9.6-8.9C0.6 7.6 2.3 4.4 5.6 3.9c2-0.3 3.8 
 const heartShape = confetti.shapeFromPath({ path: HEART, matrix: [0.8, 0, 0, 0.8, -9.6, -9.6] });
 const emojiShapes = {};
 
-// emoji sai maior e sem girar em 3D; as bolinhas coloridas vêm num disparo à parte
 export function burst(el, reaction) {
   const { x, y } = center(el);
   const fire = options => confetti({
     spread: 80, startVelocity: 28, gravity: 0.9, ticks: 170, disableForReducedMotion: true,
     colors: cssList('--confetti'), origin: { x: x / innerWidth, y: y / innerHeight }, ...options,
   });
+  if (reaction === false) return fire({ particleCount: 40, scalar: 1.2, shapes: ['circle'] });
   if (!reaction) return fire({ particleCount: 40, scalar: 1.2, shapes: [heartShape, heartShape, 'circle'] });
   emojiShapes[reaction] ??= confetti.shapeFromText({ text: reaction, scalar: 2 });
   fire({ particleCount: 16, scalar: 2, flat: true, shapes: [emojiShapes[reaction]] });

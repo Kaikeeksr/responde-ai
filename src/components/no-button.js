@@ -36,7 +36,6 @@ export function createNoButton(label, { area, avoid, onMove }) {
 
   return {
     el,
-    // foge até o signal ser abortado; cada entrada recomeça do lugar original
     enter(signal) {
       moved = false;
       for (const type of ['mousemove', 'touchmove', 'touchstart']) document.addEventListener(type, approach, { passive: true, signal });
@@ -55,7 +54,6 @@ export function createNoButton(label, { area, avoid, onMove }) {
   };
 }
 
-// lugar livre na área, sem encostar em `avoid`; com cursor, o mais longe dele entre algumas tentativas
 function pickSpot(area, { offsetWidth: width, offsetHeight: height }, avoid, cursor) {
   const spot = () => [random(0, area.width - width), random(0, area.height - height)];
   const overlaps = ([left, top]) =>

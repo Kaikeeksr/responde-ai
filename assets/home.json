@@ -1,5 +1,9 @@
 {
   "title": "Pergunte sem medo do não.",
   "lead": "Escolha o convite e mande o link.",
-  "scenes": ["facetime", "cinema"]
+  "scenes": ["facetime", "cinema"],
+  "create": {
+    "title": "Crie sua própria pergunta",
+    "description": "do jeitinho que você quiser"
+  }
 }
