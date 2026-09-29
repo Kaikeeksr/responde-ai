@@ -4,6 +4,7 @@ import { icon } from '../lib/icons.js';
 import { vibrate } from '../lib/fx.js';
 import { MAX_LENGTH, NO_REACTION, fieldsOf, findOption, loadOptions, readQuery, toQuery } from '../custom.js';
 import { createPage } from '../components/page.js';
+import { createBackdrop } from '../components/backdrop.js';
 import { createToolbar } from '../components/toolbar.js';
 import { createEmojiField } from '../components/emoji-field.js';
 import { createSwatches } from '../components/swatches.js';
@@ -16,14 +17,15 @@ const SUGGESTIONS = {
 export async function createEditor(query, { onExit, onPreview }) {
   const { base, backgrounds, colors } = await loadOptions();
   const defaults = fieldsOf(base);
-  const values = { ...defaults, title: '', ...readQuery(query) };
+  const values = { ...defaults, title: '', reply: '', ...readQuery(query) };
   const toolbar = createToolbar({ onBack: onExit });
   // até a pessoa escolher uma cor, ela acompanha a do fundo
-  let colorPicked = Boolean(values.color), resetColor;
+  let colorPicked = Boolean(values.color), resetTheme;
   values.bg = findOption(backgrounds, values.bg).id;
   if (colorPicked) values.color = findOption(colors, values.color).id;
 
   const colorOf = backgroundId => findOption(colors, findOption(backgrounds, backgroundId).color).id;
+  let backdrop = createBackdrop(findOption(backgrounds, values.bg).background), shownBackground = values.bg;
   const input = (name, props) => h('input', {
     className: `input editor-${name}`, name, value: values[name], placeholder: defaults[name],
     maxLength: MAX_LENGTH[name], autocomplete: 'off', ...props,
@@ -40,16 +42,20 @@ export async function createEditor(query, { onExit, onPreview }) {
     label: 'Fundo',
     value: values.bg,
     options: backgrounds.map(({ id, name, theme, background }) => ({ id, name, fill: theme.bg ?? 'var(--bg)', image: background?.portrait })),
-    onChange: id => colorPicked || paint(colorOf(id)),
+    onChange: id => {
+      if (!colorPicked) color.set(colorOf(id));
+      showBackdrop(id);
+      paint();
+    },
   });
   const color = createSwatches({
     className: 'swatches-colors',
     label: 'Cor de destaque',
     value: values.color ?? colorOf(values.bg),
     options: colors.map(({ id, name, theme }) => ({ id, name, fill: `linear-gradient(135deg, ${theme['accent-soft']}, ${theme.accent})` })),
-    onChange: id => {
+    onChange: () => {
       colorPicked = true;
-      paint(id);
+      paint();
     },
   });
 
@@ -72,12 +78,21 @@ export async function createEditor(query, { onExit, onPreview }) {
     items: [...form.querySelectorAll('.editor-row'), submit],
   });
 
-  function paint(id) {
-    color.set(id);
-    resetColor?.();
-    resetColor = applyTheme(findOption(colors, id).theme, buttons);
+  // a própria página já mostra o fundo e a cor escolhidos
+  function paint() {
+    resetTheme?.();
+    resetTheme = applyTheme({ ...findOption(backgrounds, background.value).theme, ...findOption(colors, color.value).theme });
   }
-  paint(color.value);
+
+  function showBackdrop(id) {
+    if (id === shownBackground) return;
+    shownBackground = id;
+    const previous = backdrop;
+    backdrop = createBackdrop(findOption(backgrounds, id).background);
+    previous.el.after(backdrop.el);
+    play(gsap.from(backdrop.el, { autoAlpha: 0, duration: 0.5, ease: 'power1.out' }));
+    play(gsap.to(previous.el, { autoAlpha: 0, duration: 0.5, ease: 'power1.out', onComplete: () => previous.el.remove() }));
+  }
 
   form.addEventListener('submit', e => {
     e.preventDefault();
@@ -90,13 +105,22 @@ export async function createEditor(query, { onExit, onPreview }) {
 
   return {
     enter() {
+      paint();
+      document.body.prepend(backdrop.el);
       document.body.append(toolbar.el);
       page.enter().then(() => usesMouse && title.focus({ preventScroll: true }));
+      play(gsap.from(backdrop.el, { autoAlpha: 0, duration: 0.6, ease: 'power1.out' }));
       play(toolbar.back.enter());
     },
     async leave() {
-      await Promise.all([page.leave(), play(toolbar.back.leave())]);
+      await Promise.all([
+        page.leave(),
+        play(toolbar.back.leave()),
+        play(gsap.to(backdrop.el, { autoAlpha: 0, duration: 0.45, ease: 'power1.in' })),
+      ]);
       toolbar.el.remove();
+      backdrop.el.remove();
+      resetTheme();
     },
   };
 }

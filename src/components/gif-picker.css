@@ -38,10 +38,13 @@
 .gif-results{
   flex:1;
   margin-top:.9rem;
+  overflow-x:hidden;
   overflow-y:auto;
   overscroll-behavior:contain;
+  scrollbar-width:none;
   touch-action:pan-y;
 }
+.gif-results::-webkit-scrollbar{display:none;}
 .gif-grid{display:flex;align-items:flex-start;gap:.5rem;}
 .gif-column{flex:1;min-width:0;display:grid;gap:.5rem;}
 .gif-item{
