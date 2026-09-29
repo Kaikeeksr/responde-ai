@@ -1,7 +1,6 @@
 :root{
   color-scheme:light;
 
-  /* cores: cada cena troca qualquer uma em scene.json → "theme" */
   --bg:#fbefe9;
   --ink:#5a4f63;
   --accent:#e7b7bd;
@@ -16,8 +15,9 @@
   --hearts:#ffc2d1 #ec6f8f, #e6d8ff #a68ae6, #ffdccd #f2998b; /* topo e base do degradê de cada coração */
   --shadow:#8c6a7a;
 
-  /* medidas acompanham a altura útil da tela */
-  --vh:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  /* --actions: espaço dos botões de baixo da prévia, fora da altura útil */
+  --actions:0px;
+  --vh:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--actions));
   --pad:clamp(.75rem, calc(var(--vh) * .045), 2rem);
   --gap:clamp(1rem, calc(var(--vh) * .051), 2.4rem);
   --hero-size:clamp(88px, calc(var(--vh) * .182), 140px);
@@ -26,8 +26,9 @@
   --btn-height:3.25rem;
 }
 @supports (height:100dvh){
-  :root{--vh:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));}
+  :root{--vh:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--actions));}
 }
+:root[data-actions]{--actions:calc(var(--btn-height) + 1.8rem);}
 *{box-sizing:border-box;}
 html{overscroll-behavior:none;}
 
@@ -35,7 +36,7 @@ body{
   margin:0;
   height:100vh;
   height:100dvh;
-  padding-block:env(safe-area-inset-top) env(safe-area-inset-bottom);
+  padding-block:env(safe-area-inset-top) calc(env(safe-area-inset-bottom) + var(--actions));
   display:grid;
   place-items:center;
   overflow:hidden;
@@ -60,6 +61,105 @@ body{
   line-height:1;
   cursor:pointer;
   -webkit-touch-callout:none;
+}
+
+/* o transform e a opacity são do GSAP: hover e toque usam translate/scale, e nada de transição em opacity */
+.btn-primary, .btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  white-space:nowrap;
+  transition:.3s cubic-bezier(.34, 1.56, .64, 1);
+  transition-property:translate, scale, box-shadow;
+}
+.btn-primary{
+  color:var(--accent-ink);
+  background:linear-gradient(135deg, var(--accent-soft), var(--accent));
+  box-shadow:0 8px 20px color-mix(in srgb, var(--shadow) 20%, transparent);
+}
+.btn-secondary{
+  color:var(--ink);
+  border:1px solid var(--muted-border);
+  background:color-mix(in srgb, var(--muted-bg) 80%, transparent);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);
+  backdrop-filter:blur(12px) saturate(1.4);
+  box-shadow:0 3px 10px color-mix(in srgb, var(--shadow) 9%, transparent);
+}
+.btn-primary svg, .btn-secondary svg{
+  flex:none;
+  width:1.15rem;
+  height:1.15rem;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+@media (hover:hover){
+  .btn-primary:enabled:hover{translate:0 -2px;scale:1.02;box-shadow:0 12px 28px color-mix(in srgb, var(--shadow) 28%, transparent);}
+  .btn-secondary:enabled:hover{translate:0 -1px;}
+}
+.btn-primary:enabled:active, .btn-secondary:enabled:active{scale:.97;}
+.btn-primary:focus-visible, .btn-secondary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+.btn-primary:disabled{opacity:.45;box-shadow:none;cursor:default;}
+
+.icon-btn{
+  display:grid;
+  place-items:center;
+  width:var(--icon-btn, 2.75rem);
+  height:var(--icon-btn, 2.75rem);
+  padding:0;
+  border:1px solid var(--muted-border);
+  border-radius:50%;
+  color:var(--ink);
+  background:color-mix(in srgb, var(--muted-bg) 60%, transparent);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);
+  backdrop-filter:blur(12px) saturate(1.4);
+  box-shadow:0 3px 10px color-mix(in srgb, var(--shadow) 9%, transparent);
+  cursor:pointer;
+  -webkit-touch-callout:none;
+  transition:.3s cubic-bezier(.34, 1.56, .64, 1);
+  transition-property:translate, scale, box-shadow;
+}
+@media (hover:hover){
+  .icon-btn:hover{translate:0 -1px;box-shadow:0 6px 16px color-mix(in srgb, var(--shadow) 14%, transparent);}
+}
+.icon-btn:active{scale:.92;}
+.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+.icon-btn svg{
+  width:45%;
+  height:45%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* 16px ou mais, senão o iPhone dá zoom no campo */
+.input{
+  width:100%;
+  min-width:0;
+  height:3rem;
+  padding:0 1rem;
+  border:1px solid var(--muted-border);
+  border-radius:14px;
+  font:inherit;
+  font-size:1.05rem;
+  color:var(--ink);
+  background:var(--muted-bg);
+  -webkit-appearance:none;
+  appearance:none;
+  -webkit-user-select:text;
+  user-select:text;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.input::placeholder{color:inherit;opacity:.45;}
+.input:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .shine{position:relative;overflow:hidden;isolation:isolate;}

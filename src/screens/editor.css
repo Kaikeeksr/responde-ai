@@ -1,0 +1,50 @@
+/* não começa embaixo do botão de voltar; fica por cima do fundo escolhido */
+.editor{position:relative;z-index:1;padding-top:max(4.75rem, calc(env(safe-area-inset-top) + 3.5rem));}
+
+.editor-form{display:grid;}
+.editor-row{
+  display:grid;
+  gap:.65rem;
+  padding:1rem .25rem;
+  border-top:1px solid var(--line);
+}
+.editor-group:last-of-type > .editor-row:last-child{border-bottom:1px solid var(--line);}
+.editor-label{font-size:.9rem;font-weight:600;}
+.editor-label small{display:block;margin-top:.15rem;font-size:.85rem;font-weight:400;color:var(--soft);}
+
+.editor-form .input[aria-invalid="true"]{border-color:#e0707f;}
+.editor-title{font-weight:600;}
+
+.editor-buttons{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.editor-yes, .editor-no{text-align:center;font-weight:600;}
+.editor-yes{
+  color:var(--accent-ink);
+  background:linear-gradient(135deg, var(--accent-soft), var(--accent));
+  border-color:transparent;
+}
+.editor-no{color:var(--muted);}
+.editor-note{grid-column:2;margin-top:-.2rem;text-align:center;font-size:.8rem;color:var(--soft);}
+
+.editor-submit{width:100%;margin-top:1.5rem;}
+
+/* a partir de tablet: texto em cima e o formulário em duas colunas, sem rolar */
+@media (min-width:44rem){
+  .editor{width:min(100%, 50rem);grid-template-columns:minmax(0, 1fr);}
+  .editor-form{grid-template-columns:repeat(2, minmax(0, 1fr));column-gap:clamp(1.5rem, 2.5vw, 2.5rem);align-items:start;}
+  .editor-group > .editor-row:last-child{border-bottom:1px solid var(--line);}
+  .editor-row{gap:.5rem;padding-block:.8rem;}
+  .editor .input{height:2.75rem;font-size:1rem;}
+  .editor .emoji-input{width:2.75rem;height:2.75rem;font-size:1.4rem;}
+  .editor-submit{grid-column:1 / -1;justify-self:center;width:min(100%, 20rem);margin-top:1.25rem;}
+}
+
+/* tela larga: texto, conteúdo e visual lado a lado */
+@media (min-width:62rem) and (min-aspect-ratio:5/4){
+  .editor{
+    width:min(100%, 70rem);
+    grid-template-columns:clamp(15rem, 24vw, 20rem) minmax(0, 1fr);
+    column-gap:clamp(2rem, 4vw, 4rem);
+    padding-block:2rem;
+  }
+  .editor .page-title{font-size:clamp(2rem, 2.8vw, 2.5rem);}
+}

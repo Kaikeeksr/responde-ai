@@ -3,12 +3,11 @@ import { h } from '../lib/dom.js';
 import { createYesButton } from './yes-button.js';
 import { createNoButton } from './no-button.js';
 
-// a própria área do componente é por onde o Não pode fugir
 export function createChoices({ yes, no, reaction, onAccept }) {
   const el = h('div', { className: 'choices' });
   const yesButton = createYesButton(yes, { reaction, onClick: onAccept });
   const noButton = createNoButton(no, { area: el, avoid: yesButton.el, onMove: follow });
-  let round; // os listeners de uma rodada morrem juntos no leave()
+  let round;
   el.append(yesButton.el, noButton.el);
 
   function follow() {

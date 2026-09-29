@@ -1,3 +1,2 @@
 # responde-ai
 uma bobeirinha
-

@@ -1,0 +1,40 @@
+.page{
+  --line:color-mix(in srgb, var(--ink) 12%, transparent);
+  --soft:color-mix(in srgb, var(--ink) 64%, var(--bg));
+  width:min(100%, 27rem);
+  max-height:100%;
+  overflow-y:auto;
+  touch-action:pan-y;
+  padding:1.75rem max(1.5rem, env(safe-area-inset-right)) 1.75rem max(1.5rem, env(safe-area-inset-left));
+  display:grid;
+  gap:clamp(2rem, 6vh, 3.25rem);
+}
+
+.page-title{
+  margin:0;
+  font-size:clamp(2.15rem, 9.5vw, 3rem);
+  font-weight:700;
+  line-height:1.04;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.page-lead{
+  margin:1rem 0 0;
+  max-width:32ch;
+  font-size:1.05rem;
+  line-height:1.5;
+  color:var(--soft);
+  text-wrap:balance;
+}
+
+@media (min-width:40rem) and (min-aspect-ratio:5/4){
+  .page{
+    width:min(100%, 62rem);
+    grid-template-columns:minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items:center;
+    column-gap:clamp(3rem, 9vw, 8rem);
+    padding-block:2rem;
+    padding-inline:max(3rem, env(safe-area-inset-left)) max(3rem, env(safe-area-inset-right));
+  }
+  .page-title{font-size:clamp(2.3rem, 5vw, 3.75rem);}
+}

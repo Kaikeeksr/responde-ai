@@ -1,15 +1,3 @@
-.home{
-  --line:color-mix(in srgb, var(--ink) 12%, transparent);
-  --soft:color-mix(in srgb, var(--ink) 64%, var(--bg));
-  width:min(100%, 27rem);
-  max-height:100%;
-  overflow-y:auto;
-  touch-action:pan-y;
-  padding:1.75rem max(1.5rem, env(safe-area-inset-right)) 1.75rem max(1.5rem, env(safe-area-inset-left));
-  display:grid;
-  gap:clamp(2rem, 6vh, 3.25rem);
-}
-
 .home-brand{
   display:flex;
   align-items:center;
@@ -20,23 +8,6 @@
   letter-spacing:.01em;
 }
 .home-brand img{width:1.75rem;height:1.75rem;}
-
-.home-title{
-  margin:0;
-  font-size:clamp(2.15rem, 9.5vw, 3rem);
-  font-weight:700;
-  line-height:1.04;
-  letter-spacing:-.035em;
-  text-wrap:balance;
-}
-.home-lead{
-  margin:1rem 0 0;
-  max-width:32ch;
-  font-size:1.05rem;
-  line-height:1.5;
-  color:var(--soft);
-  text-wrap:balance;
-}
 
 .home-list{display:grid;border-bottom:1px solid var(--line);}
 .home-item{
@@ -64,16 +35,23 @@
   transition:scale .45s cubic-bezier(.34, 1.56, .64, 1);
 }
 .home-icon img{width:100%;height:100%;}
+.home-add{
+  background:none;
+  border:1.5px dashed color-mix(in srgb, var(--ink) 28%, transparent);
+}
+.home-add svg{width:1.4rem;height:1.4rem;}
 .home-name{display:block;font-size:1.12rem;font-weight:600;letter-spacing:-.01em;}
 .home-desc{display:block;margin-top:.2rem;font-size:.93rem;color:var(--soft);}
-.home-item > svg{
-  width:1.25rem;
-  height:1.25rem;
+.home-item svg{
   fill:none;
   stroke:var(--soft);
   stroke-width:1.8;
   stroke-linecap:round;
   stroke-linejoin:round;
+}
+.home-item > svg{
+  width:1.25rem;
+  height:1.25rem;
   transition:translate .3s ease, stroke .3s ease;
 }
 @media (hover:hover){
@@ -81,15 +59,3 @@
   .home-item:hover > svg{translate:3px 0;stroke:var(--ink);}
 }
 .home-item:active .home-icon{scale:.94;}
-
-@media (min-width:40rem) and (min-aspect-ratio:5/4){
-  .home{
-    width:min(100%, 62rem);
-    grid-template-columns:minmax(0, 1.15fr) minmax(0, 1fr);
-    align-items:center;
-    column-gap:clamp(3rem, 9vw, 8rem);
-    padding-block:2rem;
-    padding-inline:max(3rem, env(safe-area-inset-left)) max(3rem, env(safe-area-inset-right));
-  }
-  .home-title{font-size:clamp(2.3rem, 5vw, 3.75rem);}
-}

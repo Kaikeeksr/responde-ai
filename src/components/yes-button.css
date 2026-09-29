@@ -1,4 +1,3 @@
-/* hover e toque usam translate/scale porque o transform é do GSAP */
 .yes{
   z-index:1;
   display:inline-flex;

@@ -1,10 +1,9 @@
 export const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const usesMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-// com "reduzir movimento" ligado, pula direto pro estado final
+// com "reduzir movimento", pula direto pro estado final
 export const play = animation => (calm ? animation.progress(1) : animation);
 
-// { "accent": "#e7b7bd" } → --accent no elemento; devolve a função que desfaz
 export function applyTheme(theme = {}, el = document.documentElement) {
   const entries = Object.entries(theme);
   for (const [name, value] of entries) el.style.setProperty(`--${name}`, value);
@@ -15,7 +14,6 @@ export function applyTheme(theme = {}, el = document.documentElement) {
   };
 }
 
-// a barra do navegador no celular acompanha o fundo
 function syncThemeColor() {
   document.querySelector('meta[name="theme-color"]').content =
     getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
@@ -47,6 +45,5 @@ export function center(el) {
 export const cssList = name =>
   getComputedStyle(document.documentElement).getPropertyValue(name).split(',').map(item => item.trim());
 
-// imagem que falhar não trava nada
 export const decoded = (...els) =>
   Promise.all(els.flatMap(el => [...el.querySelectorAll('img')]).map(img => img.decode().catch(() => {})));

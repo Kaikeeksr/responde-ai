@@ -6,7 +6,7 @@ export function createHero(visual) {
   const el = h('div', { className: 'hero', 'aria-hidden': 'true' }, circle);
 
   function set({ icon, emoji }) {
-    gsap.set(circle, { clearProps: 'transform' }); // entra do zero, não de onde o anterior saiu
+    gsap.set(circle, { clearProps: 'transform' });
     circle.replaceChildren(icon ? h('img', { src: icon, alt: '' }) : h('span', { className: 'hero-emoji', textContent: emoji }));
   }
   set(visual);
