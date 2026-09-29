@@ -6,57 +6,206 @@
     "no": "Não"
   },
   "answer": {
-    "title": "sabia que você não ia recusar",
+    "title": "Sabia que você não ia recusar",
     "emoji": "😁"
   },
   "reaction": "💖",
   "backgrounds": [
     { "id": "ceu", "name": "Céu", "scene": "facetime", "color": "rosa" },
     { "id": "cinema", "name": "Cinema", "scene": "cinema", "color": "laranja" },
-    { "id": "rosa", "name": "Rosa", "color": "rosa", "theme": { "bg": "#fbefe9" } },
     {
-      "id": "pessego", "name": "Pêssego", "color": "laranja",
-      "theme": { "bg": "#fcdcc8", "hero-bg": "#f7cdb5", "hero-border": "#eab89b", "muted-bg": "#fff4ec", "muted-border": "#f1cdb6", "shadow": "#9a5f43" }
+      "id": "rosa",
+      "name": "Rosa",
+      "color": "rosa",
+      "theme": { "bg": "#fbefe9" }
     },
     {
-      "id": "amarelo", "name": "Amarelo", "color": "amarelo",
-      "theme": { "bg": "#faeab3", "hero-bg": "#f3dc93", "hero-border": "#e3c675", "muted-bg": "#fff8e0", "muted-border": "#ecd89a", "shadow": "#8a7430" }
+      "id": "pessego",
+      "name": "Pêssego",
+      "color": "laranja",
+      "hidden": true,
+      "theme": {
+        "bg": "#fcdcc8",
+        "hero-bg": "#f7cdb5",
+        "hero-border": "#eab89b",
+        "muted-bg": "#fff4ec",
+        "muted-border": "#f1cdb6",
+        "shadow": "#9a5f43"
+      }
     },
     {
-      "id": "menta", "name": "Menta", "color": "verde",
-      "theme": { "bg": "#d3eedf", "hero-bg": "#bfe3cf", "hero-border": "#a6d3ba", "muted-bg": "#effaf4", "muted-border": "#b9dfca", "shadow": "#3f7a5c" }
+      "id": "amarelo",
+      "name": "Amarelo",
+      "color": "amarelo",
+      "theme": {
+        "bg": "#faeab3",
+        "hero-bg": "#f3dc93",
+        "hero-border": "#e3c675",
+        "muted-bg": "#fff8e0",
+        "muted-border": "#ecd89a",
+        "shadow": "#8a7430"
+      }
     },
     {
-      "id": "azul", "name": "Azul", "color": "azul",
-      "theme": { "bg": "#d6e6fb", "hero-bg": "#c2d8f5", "hero-border": "#a8c4ea", "muted-bg": "#f1f6fe", "muted-border": "#bcd2f0", "shadow": "#3f5f8f" }
+      "id": "menta",
+      "name": "Menta",
+      "color": "verde",
+      "theme": {
+        "bg": "#d3eedf",
+        "hero-bg": "#bfe3cf",
+        "hero-border": "#a6d3ba",
+        "muted-bg": "#effaf4",
+        "muted-border": "#b9dfca",
+        "shadow": "#3f7a5c"
+      }
     },
     {
-      "id": "lavanda", "name": "Lavanda", "color": "lilas",
-      "theme": { "bg": "#e3dafa", "hero-bg": "#d3c6f4", "hero-border": "#bdaceb", "muted-bg": "#f6f2fe", "muted-border": "#cfc2f1", "shadow": "#5e4a9a" }
+      "id": "azul",
+      "name": "Azul",
+      "color": "azul",
+      "theme": {
+        "bg": "#d6e6fb",
+        "hero-bg": "#c2d8f5",
+        "hero-border": "#a8c4ea",
+        "muted-bg": "#f1f6fe",
+        "muted-border": "#bcd2f0",
+        "shadow": "#3f5f8f"
+      }
     },
     {
-      "id": "vinho", "name": "Vinho", "color": "rosa",
-      "theme": { "bg": "#4a1a2c", "ink": "#f7eef2", "hero-bg": "#5e2539", "hero-border": "#763148", "muted": "#d6bfc9", "muted-bg": "#5e2539", "muted-border": "#763148", "shadow": "#000000" }
+      "id": "lavanda",
+      "name": "Lavanda",
+      "color": "lilas",
+      "theme": {
+        "bg": "#e3dafa",
+        "hero-bg": "#d3c6f4",
+        "hero-border": "#bdaceb",
+        "muted-bg": "#f6f2fe",
+        "muted-border": "#cfc2f1",
+        "shadow": "#5e4a9a"
+      }
     },
     {
-      "id": "floresta", "name": "Floresta", "color": "verde",
-      "theme": { "bg": "#1c3328", "ink": "#eef6f1", "hero-bg": "#264536", "hero-border": "#335a47", "muted": "#bcd3c6", "muted-bg": "#264536", "muted-border": "#335a47", "shadow": "#000000" }
+      "id": "vinho",
+      "name": "Vinho",
+      "color": "rosa",
+      "theme": {
+        "bg": "#4a1a2c",
+        "ink": "#f7eef2",
+        "hero-bg": "#5e2539",
+        "hero-border": "#763148",
+        "muted": "#d6bfc9",
+        "muted-bg": "#5e2539",
+        "muted-border": "#763148",
+        "shadow": "#000000"
+      }
     },
     {
-      "id": "oceano", "name": "Oceano", "color": "azul",
-      "theme": { "bg": "#12324a", "ink": "#edf4fa", "hero-bg": "#1b4461", "hero-border": "#26577a", "muted": "#b8cde0", "muted-bg": "#1b4461", "muted-border": "#26577a", "shadow": "#000000" }
+      "id": "floresta",
+      "name": "Floresta",
+      "color": "verde",
+      "theme": {
+        "bg": "#1c3328",
+        "ink": "#eef6f1",
+        "hero-bg": "#264536",
+        "hero-border": "#335a47",
+        "muted": "#bcd3c6",
+        "muted-bg": "#264536",
+        "muted-border": "#335a47",
+        "shadow": "#000000"
+      }
     },
     {
-      "id": "grafite", "name": "Grafite", "color": "lilas",
-      "theme": { "bg": "#1f1e24", "ink": "#f2eff5", "hero-bg": "#2b2a31", "hero-border": "#3b3943", "muted": "#b7b2bf", "muted-bg": "#2b2a31", "muted-border": "#3b3943", "shadow": "#000000" }
+      "id": "oceano",
+      "name": "Oceano",
+      "color": "azul",
+      "theme": {
+        "bg": "#12324a",
+        "ink": "#edf4fa",
+        "hero-bg": "#1b4461",
+        "hero-border": "#26577a",
+        "muted": "#b8cde0",
+        "muted-bg": "#1b4461",
+        "muted-border": "#26577a",
+        "shadow": "#000000"
+      }
+    },
+    {
+      "id": "grafite",
+      "name": "Grafite",
+      "color": "lilas",
+      "theme": {
+        "bg": "#1f1e24",
+        "ink": "#f2eff5",
+        "hero-bg": "#2b2a31",
+        "hero-border": "#3b3943",
+        "muted": "#b7b2bf",
+        "muted-bg": "#2b2a31",
+        "muted-border": "#3b3943",
+        "shadow": "#000000"
+      }
     }
   ],
   "colors": [
-    { "id": "rosa", "name": "Rosa", "theme": { "accent": "#e7b7bd", "accent-soft": "#ecc8cd", "accent-ink": "#5f2f3a", "confetti": "#f4a6b7, #e7b7bd, #c8b8dd, #b9a3e3, #ffd1dc" } },
-    { "id": "laranja", "name": "Laranja", "theme": { "accent": "#ef9f5f", "accent-soft": "#f7c98f", "accent-ink": "#4a2410", "confetti": "#f7c98f, #ef9f5f, #fff1d6, #f4b183, #ffd9b0" } },
-    { "id": "amarelo", "name": "Amarelo", "theme": { "accent": "#eccb6a", "accent-soft": "#f5e3a3", "accent-ink": "#4d3b0c", "confetti": "#f5e3a3, #eccb6a, #fff4cf, #e6b84a, #fbe7b0" } },
-    { "id": "verde", "name": "Verde", "theme": { "accent": "#8fcfad", "accent-soft": "#c1e6d1", "accent-ink": "#1e4a35", "confetti": "#c1e6d1, #8fcfad, #e4f5eb, #6fbf95, #b9e3cc" } },
-    { "id": "azul", "name": "Azul", "theme": { "accent": "#8db6e8", "accent-soft": "#bcd5f4", "accent-ink": "#1c375a", "confetti": "#bcd5f4, #8db6e8, #e2edfb, #6b9fe0, #b3cff2" } },
-    { "id": "lilas", "name": "Lilás", "theme": { "accent": "#b7a2e2", "accent-soft": "#d4c7f0", "accent-ink": "#33265a", "confetti": "#d4c7f0, #b7a2e2, #ece6fa, #9d83d6, #cdbff0" } }
+    {
+      "id": "rosa",
+      "name": "Rosa",
+      "theme": {
+        "accent": "#e7b7bd",
+        "accent-soft": "#ecc8cd",
+        "accent-ink": "#5f2f3a",
+        "confetti": "#f4a6b7, #e7b7bd, #c8b8dd, #b9a3e3, #ffd1dc"
+      }
+    },
+    {
+      "id": "laranja",
+      "name": "Laranja",
+      "theme": {
+        "accent": "#ef9f5f",
+        "accent-soft": "#f7c98f",
+        "accent-ink": "#4a2410",
+        "confetti": "#f7c98f, #ef9f5f, #fff1d6, #f4b183, #ffd9b0"
+      }
+    },
+    {
+      "id": "amarelo",
+      "name": "Amarelo",
+      "theme": {
+        "accent": "#eccb6a",
+        "accent-soft": "#f5e3a3",
+        "accent-ink": "#4d3b0c",
+        "confetti": "#f5e3a3, #eccb6a, #fff4cf, #e6b84a, #fbe7b0"
+      }
+    },
+    {
+      "id": "verde",
+      "name": "Verde",
+      "theme": {
+        "accent": "#8fcfad",
+        "accent-soft": "#c1e6d1",
+        "accent-ink": "#1e4a35",
+        "confetti": "#c1e6d1, #8fcfad, #e4f5eb, #6fbf95, #b9e3cc"
+      }
+    },
+    {
+      "id": "azul",
+      "name": "Azul",
+      "theme": {
+        "accent": "#8db6e8",
+        "accent-soft": "#bcd5f4",
+        "accent-ink": "#1c375a",
+        "confetti": "#bcd5f4, #8db6e8, #e2edfb, #6b9fe0, #b3cff2"
+      }
+    },
+    {
+      "id": "lilas",
+      "name": "Lilás",
+      "theme": {
+        "accent": "#b7a2e2",
+        "accent-soft": "#d4c7f0",
+        "accent-ink": "#33265a",
+        "confetti": "#d4c7f0, #b7a2e2, #ece6fa, #9d83d6, #cdbff0"
+      }
+    }
   ]
 }

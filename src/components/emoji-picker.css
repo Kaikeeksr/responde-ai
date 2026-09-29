@@ -1,0 +1,107 @@
+.emoji-sheet{height:min(84dvh, 42rem);}
+@media (min-width:40rem) and (min-height:36rem){
+  .emoji-sheet{height:min(80vh, 40rem);}
+}
+
+/* um marcador só, que desliza entre as abas (--at = índice da aba) */
+.emoji-tabs{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(var(--tabs, 9), minmax(0, 1fr));
+  margin-top:.75rem;
+  padding-bottom:.5rem;
+  border-bottom:1px solid var(--line);
+}
+.emoji-tab-mark{
+  position:absolute;
+  top:0;
+  left:0;
+  width:calc(100% / var(--tabs, 9));
+  height:2.25rem;
+  border-radius:12px;
+  background:color-mix(in srgb, var(--accent) 35%, transparent);
+  translate:calc(var(--at, 0) * 100%) 0;
+  transition:translate .45s cubic-bezier(.34, 1.3, .64, 1);
+  pointer-events:none;
+}
+.emoji-tab-mark[hidden]{display:none;}
+.emoji-tab{
+  position:relative;
+  display:grid;
+  place-items:center;
+  height:2.25rem;
+  padding:0;
+  border:none;
+  border-radius:12px;
+  font-size:1.15rem;
+  line-height:1;
+  background:none;
+  cursor:pointer;
+  -webkit-touch-callout:none;
+  filter:grayscale(.7);
+  opacity:.7;
+  transition:filter .25s ease, opacity .25s ease, scale .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.emoji-tab[aria-pressed="true"]{filter:none;opacity:1;}
+@media (hover:hover){
+  .emoji-tab:hover{filter:none;opacity:1;}
+}
+.emoji-tab:active{scale:.9;}
+.emoji-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+@media (prefers-reduced-motion:reduce){
+  .emoji-tab-mark{transition:none;}
+}
+
+.emoji-results{
+  position:relative;
+  flex:1;
+  min-height:0;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+  touch-action:pan-y;
+  -webkit-overflow-scrolling:touch;
+}
+.emoji-results::-webkit-scrollbar{display:none;}
+
+.emoji-heading{
+  position:sticky;
+  top:0;
+  z-index:1;
+  margin:0;
+  padding:.75rem .25rem .4rem;
+  font-size:.85rem;
+  font-weight:600;
+  color:var(--soft);
+  background:var(--bg);
+}
+/* 2.6rem: o JS usa o mesmo número pra estimar a altura das seções que ainda não foram desenhadas */
+.emoji-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(2.6rem, 1fr));}
+.emoji-section, .emoji-chunk{content-visibility:auto;contain-intrinsic-size:auto 20rem;}
+.emoji-list.is-flat{padding-top:.5rem;}
+.emoji-cell{
+  display:grid;
+  place-items:center;
+  aspect-ratio:1;
+  padding:0;
+  border:none;
+  border-radius:12px;
+  font-size:1.6rem;
+  line-height:1;
+  background:none;
+  cursor:pointer;
+  -webkit-touch-callout:none;
+  transition:scale .3s cubic-bezier(.34, 1.56, .64, 1), background-color .2s ease;
+}
+@media (hover:hover){
+  .emoji-cell:hover{background:var(--hero-bg);scale:1.1;}
+}
+.emoji-cell:active{scale:.9;}
+.emoji-cell:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+
+.emoji-status{margin:2rem 1rem;text-align:center;color:var(--soft);text-wrap:balance;}
+.emoji-status:empty{display:none;}
+
+.emoji-footer{padding-top:.75rem;border-top:1px solid var(--line);}
+.emoji-close{width:100%;}

@@ -1,3 +1,4 @@
+import './lib/viewport.js';
 import { ROOT, loadScene } from './content.js';
 import { EDITOR, BASE, loadCustom, reviseQuery } from './custom.js';
 import { createHome } from './screens/home.js';
@@ -6,7 +7,7 @@ import { createScene } from './screens/scene.js';
 
 // no ar, cada rota é um <rota>.html gerado pelo build a partir deste index.html
 const routeOf = ({ pathname }) => pathname.slice(ROOT.pathname.length).replace(/(^index)?\.html$/, '');
-const { body } = document;
+const { documentElement: root } = document;
 let screen, draft, queue = Promise.resolve();
 
 addEventListener('popstate', render);
@@ -52,12 +53,12 @@ function render() {
       const first = !screen;
       await screen?.leave();
       screen = await next;
-      if (first) body.style.transition = 'none';
+      if (first) root.style.transition = 'none';
       screen.enter();
-      // a primeira tela já abre com a cor dela; o fade do fundo é só pra troca entre telas
+      // a primeira tela já abre com a cor dela; o fade do tema é só pra troca entre telas
       if (first) {
-        void getComputedStyle(body).backgroundColor;
-        body.style.removeProperty('transition');
+        void getComputedStyle(root).getPropertyValue('--bg');
+        root.style.removeProperty('transition');
       }
     })
     .catch(console.error);

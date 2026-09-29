@@ -20,15 +20,19 @@ export function createPage({ className, before, title, lead, content, items }) {
         .from(lines.lines, { yPercent: 160, stagger: 0.08 }, 0.05)
         .from(paragraph, { autoAlpha: 0, y: 10 }, 0.3)
         // o transform que o GSAP deixa inline travaria o hover/toque do CSS
-        .from(items, { autoAlpha: 0, y: 16, stagger: 0.07, clearProps: 'transform,opacity,visibility' }, 0.4);
+        .from(items, { autoAlpha: 0, y: 16, stagger: spread(items, 0.07, 0.45), clearProps: 'transform,opacity,visibility' }, 0.4);
       if (before) entrance.from(before, { autoAlpha: 0, y: 8 }, 0);
       return play(entrance);
     },
     leave() {
       entrance.kill();
       el.inert = true;
-      return play(gsap.to([intro, ...items], { autoAlpha: 0, y: -12, duration: 0.3, ease: 'power2.in', stagger: 0.05 }))
+      const parts = [intro, ...items];
+      return play(gsap.to(parts, { autoAlpha: 0, y: -12, duration: 0.3, ease: 'power2.in', stagger: spread(parts, 0.05, 0.15) }))
         .then(() => el.remove());
     },
   };
 }
+
+// intervalo entre itens, sem deixar o total passar de `max`: tela com muitos itens não fica arrastada
+const spread = (list, each, max) => Math.min(each, max / Math.max(1, list.length - 1));

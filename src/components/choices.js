@@ -13,13 +13,18 @@ export function createChoices({ yes, no, reaction, onAccept }) {
   function follow() {
     yesButton.lookAt(noButton.el);
   }
+  // o Sim mudou de lugar (terminou de entrar ou a tela mudou): mede os olhos de novo
+  function settle() {
+    yesButton.remeasure();
+    follow();
+  }
 
   return {
     el,
     enter() {
       round = new AbortController();
-      addEventListener('resize', follow, { signal: round.signal });
-      const timeline = gsap.timeline({ onComplete: follow })
+      addEventListener('resize', settle, { signal: round.signal });
+      const timeline = gsap.timeline({ onComplete: settle })
         .add(yesButton.enter(round.signal))
         .add(noButton.enter(round.signal), 0.15);
       follow();

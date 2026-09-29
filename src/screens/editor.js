@@ -2,12 +2,15 @@ import { gsap } from '../lib/vendor.js';
 import { h, play, usesMouse, applyTheme } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
 import { vibrate } from '../lib/fx.js';
-import { MAX_LENGTH, NO_REACTION, fieldsOf, findOption, loadOptions, readQuery, toQuery } from '../custom.js';
+import { MAX_LENGTH, NO_REACTION, fieldsOf, findOption, findBackground, findColor, loadOptions, readQuery, toQuery } from '../custom.js';
+import { isHex, accentTheme } from '../lib/color.js';
 import { createPage } from '../components/page.js';
 import { createBackdrop } from '../components/backdrop.js';
 import { createToolbar } from '../components/toolbar.js';
 import { createEmojiField } from '../components/emoji-field.js';
 import { createSwatches } from '../components/swatches.js';
+import { pickColor } from '../components/color-picker.js';
+import { preloadEmojis } from '../components/emoji-picker.js';
 
 const SUGGESTIONS = {
   emoji: ['😁', '🥰', '😍', '🤩', '🥳', '😎'],
@@ -21,11 +24,14 @@ export async function createEditor(query, { onExit, onPreview }) {
   const toolbar = createToolbar({ onBack: onExit });
   // até a pessoa escolher uma cor, ela acompanha a do fundo
   let colorPicked = Boolean(values.color), resetTheme;
-  values.bg = findOption(backgrounds, values.bg).id;
-  if (colorPicked) values.color = findOption(colors, values.color).id;
+  values.bg = findBackground(backgrounds, values.bg).id;
+  if (colorPicked) values.color = findColor(colors, values.color).id;
 
-  const colorOf = backgroundId => findOption(colors, findOption(backgrounds, backgroundId).color).id;
-  let backdrop = createBackdrop(findOption(backgrounds, values.bg).background), shownBackground = values.bg;
+  // fundo livre não tem cor própria: a de destaque fica como está
+  const colorOf = backgroundId => (isHex(backgroundId) ? color.value : findOption(colors, findOption(backgrounds, backgroundId).color).id);
+  // todo fundo livre usa o mesmo fundo sem imagem: trocar de cor não refaz o fade
+  const backdropKey = id => (isHex(id) ? '#' : id);
+  let backdrop = createBackdrop(findBackground(backgrounds, values.bg).background), shownBackground = backdropKey(values.bg);
   const input = (name, props) => h('input', {
     className: `input editor-${name}`, name, value: values[name], placeholder: defaults[name],
     maxLength: MAX_LENGTH[name], autocomplete: 'off', ...props,
@@ -33,6 +39,7 @@ export async function createEditor(query, { onExit, onPreview }) {
   const emojiField = (name, label, none) => createEmojiField({ name, label, value: values[name], suggestions: SUGGESTIONS[name], none }).el;
 
   const title = input('title', { placeholder: 'Jantar hoje?', required: true });
+  const reply = input('reply', { 'aria-label': 'Texto da resposta' });
   const buttons = h('div', { className: 'editor-buttons' },
     input('yes', { 'aria-label': 'Texto do botão de sim' }),
     input('no', { 'aria-label': 'Texto do botão de não', 'aria-describedby': 'editor-no-note' }),
@@ -41,11 +48,21 @@ export async function createEditor(query, { onExit, onPreview }) {
     className: 'swatches-backgrounds',
     label: 'Fundo',
     value: values.bg,
-    options: backgrounds.map(({ id, name, theme, background }) => ({ id, name, fill: theme.bg ?? 'var(--bg)', image: background?.portrait })),
+    options: backgrounds.filter(option => !option.hidden)
+      .map(({ id, name, theme, background }) => ({ id, name, fill: theme.bg ?? 'var(--bg)', image: background?.portrait })),
     onChange: id => {
       if (!colorPicked) color.set(colorOf(id));
       showBackdrop(id);
       paint();
+    },
+    custom: {
+      name: 'Outra cor de fundo',
+      fill: hex => hex,
+      start: () => findBackground(backgrounds, background.value).theme.bg ?? '#fbefe9',
+      pick: value => pickLive({ label: 'Cor do fundo', value }, hex => {
+        showBackdrop(hex);
+        paint(hex);
+      }),
     },
   });
   const color = createSwatches({
@@ -57,14 +74,34 @@ export async function createEditor(query, { onExit, onPreview }) {
       colorPicked = true;
       paint();
     },
+    custom: {
+      name: 'Outra cor de destaque',
+      fill: hex => `linear-gradient(135deg, ${accentTheme(hex)['accent-soft']}, ${hex})`,
+      start: () => findColor(colors, color.value).theme.accent,
+      pick: value => pickLive({ label: 'Cor de destaque', value }, hex => paint(background.value, hex)),
+    },
   });
+
+  // enquanto escolhe, a página já mostra a cor (sem o fade do tema, que atrasaria o dedo);
+  // cancelando, volta ao que estava, aí sim com fade
+  async function pickLive(options, preview) {
+    const { dataset } = document.documentElement;
+    dataset.live = '';
+    const hex = await pickColor({ ...options, onInput: preview });
+    delete dataset.live;
+    if (!hex) {
+      showBackdrop(background.value);
+      paint();
+    }
+    return hex;
+  }
 
   const submit = h('button', { type: 'submit', className: 'btn btn-primary editor-submit' }, 'Ver como fica', icon('next'));
   const form = h('form', { className: 'editor-form', noValidate: true },
     h('div', { className: 'editor-group' },
       row('Pergunta', null, title),
       row('Botões', null, buttons),
-      row('Resposta', 'aparece quando dizem sim', input('reply', { 'aria-label': 'Texto da resposta' }), emojiField('emoji', 'Emoji da resposta'))),
+      row('Resposta', 'aparece quando dizem sim', reply, emojiField('emoji', 'Emoji da resposta'))),
     h('div', { className: 'editor-group' },
       row('Emoji do cartão', 'sobe quando tocam no cartão', emojiField('reaction', 'Emoji do cartão', NO_REACTION)),
       row('Fundo', null, background.el),
@@ -79,16 +116,16 @@ export async function createEditor(query, { onExit, onPreview }) {
   });
 
   // a própria página já mostra o fundo e a cor escolhidos
-  function paint() {
+  function paint(bg = background.value, accent = color.value) {
     resetTheme?.();
-    resetTheme = applyTheme({ ...findOption(backgrounds, background.value).theme, ...findOption(colors, color.value).theme });
+    resetTheme = applyTheme({ ...findBackground(backgrounds, bg).theme, ...findColor(colors, accent).theme });
   }
 
   function showBackdrop(id) {
-    if (id === shownBackground) return;
-    shownBackground = id;
+    if (backdropKey(id) === shownBackground) return;
+    shownBackground = backdropKey(id);
     const previous = backdrop;
-    backdrop = createBackdrop(findOption(backgrounds, id).background);
+    backdrop = createBackdrop(findBackground(backgrounds, id).background);
     previous.el.after(backdrop.el);
     play(gsap.from(backdrop.el, { autoAlpha: 0, duration: 0.5, ease: 'power1.out' }));
     play(gsap.to(previous.el, { autoAlpha: 0, duration: 0.5, ease: 'power1.out', onComplete: () => previous.el.remove() }));
@@ -108,7 +145,10 @@ export async function createEditor(query, { onExit, onPreview }) {
       paint();
       document.body.prepend(backdrop.el);
       document.body.append(toolbar.el);
-      page.enter().then(() => usesMouse && title.focus({ preventScroll: true }));
+      page.enter().then(() => {
+        if (usesMouse) title.focus({ preventScroll: true });
+        preloadEmojis(); // depois da entrada, pra não disputar com a animação
+      });
       play(gsap.from(backdrop.el, { autoAlpha: 0, duration: 0.6, ease: 'power1.out' }));
       play(toolbar.back.enter());
     },
@@ -126,10 +166,29 @@ export async function createEditor(query, { onExit, onPreview }) {
 }
 
 function row(label, hint, ...controls) {
+  // um campo sozinho vira <label>: tocar no título da linha foca o campo
   const alone = controls.length === 1 && controls[0].tagName === 'INPUT';
-  return h(alone ? 'label' : 'div', { className: 'editor-row' },
-    h('span', { className: 'editor-label' }, label, hint && h('small', { textContent: hint })),
+  // "x/limite" do campo que está sendo digitado, sempre no mesmo lugar: à direita do título da linha.
+  // só aparece durante a digitação; o limite de verdade é o maxLength
+  const count = h('span', { className: 'editor-count', ariaHidden: 'true' });
+  const el = h(alone ? 'label' : 'div', { className: 'editor-row' },
+    h('span', { className: 'editor-head' },
+      h('span', { className: 'editor-label' }, label, hint && h('small', { textContent: hint })),
+      count),
     ...controls);
+  const limited = target => target.matches('.input') && target.maxLength > 0;
+  const update = ({ value, maxLength }) => {
+    count.textContent = `${value.length}/${maxLength}`;
+    count.classList.toggle('is-near', value.length >= maxLength * 0.85);
+  };
+  el.addEventListener('focusin', ({ target }) => {
+    if (!limited(target)) return;
+    update(target);
+    count.classList.add('is-on');
+  });
+  el.addEventListener('input', ({ target }) => limited(target) && update(target));
+  el.addEventListener('focusout', ({ target }) => limited(target) && count.classList.remove('is-on'));
+  return el;
 }
 
 function complain(input) {

@@ -14,10 +14,18 @@ export function applyTheme(theme = {}, el = document.documentElement) {
   };
 }
 
+const BASE_BG = '#fbefe9'; // o --bg do base.css
+
+// lê o valor que o tema pediu, não o computado: com o fade do tema o computado ainda é a cor antiga,
+// e ler o computado forçaria o navegador a recalcular o estilo da página inteira na hora
 function syncThemeColor() {
   document.querySelector('meta[name="theme-color"]').content =
-    getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    document.documentElement.style.getPropertyValue('--bg').trim() || BASE_BG;
 }
+
+// resolve quando o navegador está ocioso (ou no `timeout`, no máximo); o Safari não tem requestIdleCallback
+export const idle = (timeout = 1000) => new Promise(resolve =>
+  (window.requestIdleCallback ?? (fn => setTimeout(fn, 16)))(() => resolve(), { timeout }));
 
 // filhos falsy são ignorados
 export function h(tag, props = {}, ...children) {

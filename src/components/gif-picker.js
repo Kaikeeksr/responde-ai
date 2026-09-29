@@ -2,6 +2,7 @@ import { gsap } from '../lib/vendor.js';
 import { h, play, usesMouse } from '../lib/dom.js';
 import { searchGifs } from '../lib/giphy.js';
 import { createActionBar } from './action-bar.js';
+import { createSheet } from './sheet.js';
 
 const PAGE = 24;
 const TYPING_MS = 450; // cada busca gasta do limite por hora da chave
@@ -22,16 +23,14 @@ export function pickGif() {
     const status = h('p', { className: 'gif-status', role: 'status' });
     const sentinel = h('div', { className: 'gif-more' });
     const results = h('div', { className: 'gif-results' }, grid, status, sentinel);
-    const sheet = h('div', { className: 'gif-sheet' },
+    const sheet = createSheet({ className: 'gif-sheet', label: 'Escolher GIF', onDismiss: () => finish() },
       search,
       results,
       actions.el,
       h('p', { className: 'gif-credit' }, 'Powered by ', h('strong', { textContent: 'GIPHY' })));
-    const backdrop = h('div', { className: 'gif-backdrop' });
-    const dialog = h('dialog', { className: 'gif-picker', 'aria-label': 'Escolher GIF' }, backdrop, sheet);
     const more = new IntersectionObserver(([entry]) => entry.isIntersecting && !request && offset < total && load(),
       { root: results, rootMargin: '0px 0px 300px' });
-    let term = '', offset = 0, total = Infinity, columns, heights, request, typing, selected, done;
+    let term = '', offset = 0, total = Infinity, columns, heights, request, typing, selected;
 
     function reset() {
       const count = results.clientWidth >= 440 ? 3 : 2;
@@ -99,16 +98,11 @@ export function pickGif() {
     }
 
     function finish(gif) {
-      if (done) return;
-      done = true;
+      if (!sheet.close()) return;
       clearTimeout(typing);
       request?.abort();
       more.disconnect();
       resolve(gif);
-      play(gsap.timeline({ onComplete: () => dialog.remove() })
-        .to(sheet, { yPercent: 12, opacity: 0, duration: 0.3, ease: 'power2.in' })
-        .to(backdrop, { opacity: 0, duration: 0.3 }, 0)
-        .call(() => dialog.open && dialog.close()));
     }
 
     search.addEventListener('input', () => {
@@ -120,20 +114,9 @@ export function pickGif() {
       find(search.value.trim());
       if (!usesMouse) search.blur();
     });
-    backdrop.addEventListener('click', () => finish());
-    dialog.addEventListener('cancel', e => {
-      e.preventDefault();
-      finish();
-    });
-    dialog.addEventListener('close', () => finish()); // o navegador pode fechar sem passar pelo cancel
-
     actions.back.autofocus = !usesMouse;
-    document.body.append(dialog);
-    dialog.showModal();
+    sheet.open();
     reset();
     load();
-    play(gsap.timeline({ defaults: { ease: 'expo.out' } })
-      .from(backdrop, { opacity: 0, duration: 0.35, ease: 'power1.out' })
-      .from(sheet, { yPercent: 25, opacity: 0, duration: 0.6 }, 0));
   });
 }

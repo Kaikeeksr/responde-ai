@@ -1,5 +1,21 @@
+/* as cores do tema são registradas: numa troca de tema o navegador anima as próprias variáveis,
+   e fundo, texto, botões e bordas mudam juntos (antes só o fundo fazia fade e o texto trocava na hora) */
+@property --bg{syntax:"<color>";inherits:true;initial-value:#fbefe9;}
+@property --ink{syntax:"<color>";inherits:true;initial-value:#5a4f63;}
+@property --accent{syntax:"<color>";inherits:true;initial-value:#e7b7bd;}
+@property --accent-soft{syntax:"<color>";inherits:true;initial-value:#ecc8cd;}
+@property --accent-ink{syntax:"<color>";inherits:true;initial-value:#5f2f3a;}
+@property --hero-bg{syntax:"<color>";inherits:true;initial-value:#f1e6ea;}
+@property --hero-border{syntax:"<color>";inherits:true;initial-value:#e0cdd6;}
+@property --muted{syntax:"<color>";inherits:true;initial-value:#847a8c;}
+@property --muted-bg{syntax:"<color>";inherits:true;initial-value:#fbf7f5;}
+@property --muted-border{syntax:"<color>";inherits:true;initial-value:#e7ddec;}
+@property --shadow{syntax:"<color>";inherits:true;initial-value:#8c6a7a;}
+
 :root{
   color-scheme:light;
+  transition:.5s ease;
+  transition-property:--bg, --ink, --accent, --accent-soft, --accent-ink, --hero-bg, --hero-border, --muted, --muted-bg, --muted-border, --shadow;
 
   --bg:#fbefe9;
   --ink:#5a4f63;
@@ -29,6 +45,8 @@
   :root{--vh:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--actions));}
 }
 :root[data-actions]{--actions:calc(var(--btn-height) + 1.8rem);}
+/* prévia ao vivo (arrastando no seletor de cor): a cor segue o dedo, sem fade atrasando */
+:root[data-live]{transition:none;}
 *{box-sizing:border-box;}
 html{overscroll-behavior:none;}
 
@@ -43,12 +61,13 @@ body{
   font-family:ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color:var(--ink);
   background:var(--bg);
-  transition:background-color .5s ease;
   -webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;
   user-select:none;
   touch-action:none;
 }
+/* teclado aberto: só a área acima dele (vem do lib/viewport.js) */
+:root[data-keyboard] body{height:var(--keyboard-height);}
 
 .btn{
   height:var(--btn-height);
@@ -137,12 +156,16 @@ body{
   stroke-linejoin:round;
 }
 
-/* 16px ou mais, senão o iPhone dá zoom no campo */
+/* 16px ou mais, senão o iPhone dá zoom no campo.
+   a altura vem do padding + line-height fixo: com `height` fixa, o Safari do iPhone
+   joga o texto e o placeholder pra baixo do campo */
 .input{
+  --input-height:3rem;
   width:100%;
   min-width:0;
-  height:3rem;
-  padding:0 1rem;
+  height:auto;
+  padding:calc((var(--input-height) - 1.4rem - 2px) / 2) 1rem;
+  line-height:1.4rem;
   border:1px solid var(--muted-border);
   border-radius:14px;
   font:inherit;
@@ -155,7 +178,7 @@ body{
   user-select:text;
   transition:border-color .2s ease, box-shadow .2s ease;
 }
-.input::placeholder{color:inherit;opacity:.45;}
+.input::placeholder{color:inherit;opacity:.45;line-height:inherit;}
 .input:focus{
   outline:none;
   border-color:var(--accent);

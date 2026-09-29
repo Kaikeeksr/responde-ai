@@ -1,38 +1,6 @@
-.gif-picker[open]{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  max-width:none;
-  max-height:none;
-  margin:0;
-  padding:0;
-  border:none;
-  display:grid;
-  align-items:end;
-  justify-items:center;
-  overflow:hidden;
-  color:var(--ink);
-  background:none;
-}
-.gif-picker::backdrop{background:none;}
-.gif-backdrop{position:absolute;inset:0;background:color-mix(in srgb, var(--shadow) 45%, transparent);}
-
-.gif-sheet{
-  --soft:color-mix(in srgb, var(--ink) 64%, var(--bg));
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  width:min(100%, 34rem);
-  height:min(88dvh, 46rem);
-  padding:1rem 1rem 0;
-  border-radius:26px 26px 0 0;
-  background:var(--bg);
-  box-shadow:0 -12px 40px color-mix(in srgb, var(--shadow) 25%, transparent);
-}
+.gif-sheet{height:min(88dvh, 46rem);}
 @media (min-width:40rem) and (min-height:36rem){
-  .gif-picker[open]{align-items:center;}
-  .gif-sheet{height:min(82vh, 44rem);border-radius:26px;}
+  .gif-sheet{height:min(82vh, 44rem);}
 }
 
 .gif-results{
