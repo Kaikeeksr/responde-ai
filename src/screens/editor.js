@@ -17,11 +17,11 @@ const SUGGESTIONS = {
   reaction: ['💖', '🍿', '🍕', '🌹', '✨', '🎉'],
 };
 
-export async function createEditor(query, { onExit, onPreview }) {
+export async function createEditor(query, { onExit, onHome, onPreview }) {
   const { base, backgrounds, colors } = await loadOptions();
   const defaults = fieldsOf(base);
   const values = { ...defaults, title: '', reply: '', ...readQuery(query) };
-  const toolbar = createToolbar({ onBack: onExit });
+  const toolbar = createToolbar({ onBack: onExit, onHome });
   // até a pessoa escolher uma cor, ela acompanha a do fundo
   let colorPicked = Boolean(values.color), resetTheme;
   values.bg = findBackground(backgrounds, values.bg).id;
@@ -150,12 +150,12 @@ export async function createEditor(query, { onExit, onPreview }) {
         preloadEmojis(); // depois da entrada, pra não disputar com a animação
       });
       play(gsap.from(backdrop.el, { autoAlpha: 0, duration: 0.6, ease: 'power1.out' }));
-      play(toolbar.back.enter());
+      play(toolbar.nav.enter());
     },
     async leave() {
       await Promise.all([
         page.leave(),
-        play(toolbar.back.leave()),
+        play(toolbar.nav.leave()),
         play(gsap.to(backdrop.el, { autoAlpha: 0, duration: 0.45, ease: 'power1.in' })),
       ]);
       toolbar.el.remove();
