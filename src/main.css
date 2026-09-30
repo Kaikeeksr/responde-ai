@@ -3,6 +3,7 @@
 @import url("screens/home.css");
 @import url("screens/editor.css");
 @import url("screens/scene.css");
+@import url("screens/share.css");
 @import url("components/emoji-field.css");
 @import url("components/swatches.css");
 @import url("components/backdrop.css");

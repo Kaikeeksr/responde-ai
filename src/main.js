@@ -4,6 +4,7 @@ import { EDITOR, BASE, loadCustom, reviseQuery } from './custom.js';
 import { createHome } from './screens/home.js';
 import { createEditor } from './screens/editor.js';
 import { createScene } from './screens/scene.js';
+import { createShare } from './screens/share.js';
 
 // no ar, cada rota é um <rota>.html gerado pelo build a partir deste index.html
 const routeOf = ({ pathname }) => pathname.slice(ROOT.pathname.length).replace(/(^index)?\.html$/, '');
@@ -19,6 +20,8 @@ function go(path, state) {
   history.pushState({ inApp: true, ...state }, '', url);
   render();
 }
+
+const goHome = () => go('');
 
 function exitScene() {
   if (history.state?.inApp) history.back();
@@ -36,10 +39,19 @@ function revise(changes) {
   history.replaceState(history.state, '', draft);
 }
 
-// mesmo link, agora como convite pronto; voltar retorna pra prévia
 function publish() {
+  history.pushState({ inApp: true, sharing: true }, '', location.href);
+  render();
+}
+
+function viewPublished() {
   history.pushState({ inApp: true, published: true }, '', location.href);
   render();
+}
+
+function startOver() {
+  draft = undefined;
+  go(EDITOR);
 }
 
 function render() {
@@ -64,12 +76,13 @@ function render() {
     .catch(console.error);
 }
 
-function screenFor(route, query, { fromEditor, published }) {
+function screenFor(route, query, { fromEditor, sharing, published }) {
   if (!route) return createHome({ onOpen: go });
-  if (route === EDITOR) return createEditor(query, { onExit: exitScene, onPreview: preview });
+  if (route === EDITOR) return createEditor(query, { onExit: exitScene, onHome: goHome, onPreview: preview });
+  if (route === BASE && sharing) return createShare(loadCustom(query), { onExit: exitScene, onHome: goHome, onView: viewPublished, onNew: startOver });
   if (route === BASE) {
     const options = fromEditor ? { onEdit: revise, onPublish: publish } : { published };
-    return createScene(loadCustom(query), { onExit: exitScene, ...options });
+    return createScene(loadCustom(query), { onExit: exitScene, onHome: goHome, ...options });
   }
-  return createScene(loadScene(route), { onExit: exitScene });
+  return createScene(loadScene(route), { onExit: exitScene, onHome: goHome });
 }

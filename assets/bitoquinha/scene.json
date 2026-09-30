@@ -1,0 +1,33 @@
+{
+  "description": "só uma, prometo",
+  "background": {
+    "portrait": "./background-portrait.svg",
+    "landscape": "./background-landscape.svg"
+  },
+  "question": {
+    "title": "Uma bitoquinha, que tal?",
+    "icon": "./icon.svg",
+    "yes": "Sim",
+    "no": "Nem fudendo"
+  },
+  "answer": {
+    "title": "Sabia que você não ia resistir",
+    "emoji": "😘",
+    "gif": "naAaDvbAoOYdW"
+  },
+  "reaction": "💋",
+  "theme": {
+    "bg": "#ffe3e8",
+    "ink": "#5b3444",
+    "accent": "#ef7f9b",
+    "accent-soft": "#f8b1c2",
+    "accent-ink": "#521a2c",
+    "hero-bg": "#ffd3dc",
+    "hero-border": "#f3b2c0",
+    "muted": "#8d6371",
+    "muted-bg": "#fff4f6",
+    "muted-border": "#f5ccd5",
+    "shadow": "#9b4f66",
+    "confetti": "#ef7f9b, #f8b1c2, #ffd1dc, #fff4f6, #e65a7c"
+  }
+}

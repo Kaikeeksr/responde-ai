@@ -1,8 +1,8 @@
 /* não começa embaixo do botão de voltar; fica por cima do fundo escolhido */
 .editor{position:relative;z-index:1;padding-top:max(4.75rem, calc(env(safe-area-inset-top) + 3.5rem));}
 
-/* largura da grade de fundos (6 × 3rem + 5 vãos); cores e emojis usam a mesma */
-.editor-form{--choices-width:20.5rem;display:grid;}
+/* largura da grade de fundos (7 × 3rem + 6 vãos); cores e emojis usam a mesma */
+.editor-form{--choices-width:24rem;display:grid;}
 /* sem divisórias: o respiro entre as linhas (maior que o de dentro delas) é o que agrupa */
 .editor-row{
   display:grid;
