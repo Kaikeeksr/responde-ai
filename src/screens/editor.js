@@ -134,7 +134,7 @@ export async function createEditor(query, { onExit, onHome, onPreview }) {
   form.addEventListener('submit', e => {
     e.preventDefault();
     if (!title.value.trim()) return complain(title);
-    const filled = { ...defaults, gif: values.gif, bg: background.value, color: colorPicked ? color.value : undefined };
+    const filled = { ...defaults, gif: values.gif, icon: values.icon, bg: background.value, color: colorPicked ? color.value : undefined };
     for (const [name, value] of new FormData(form)) if (value.trim()) filled[name] = value.trim();
     onPreview(toQuery(filled));
   });

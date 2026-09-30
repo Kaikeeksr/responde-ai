@@ -7,6 +7,7 @@ import { createHero } from '../components/hero.js';
 import { createTitle } from '../components/title.js';
 import { createChoices } from '../components/choices.js';
 import { createReward } from '../components/reward.js';
+import { pickIcon } from '../components/icon-picker.js';
 
 const { body, documentElement: root } = document;
 const GIF_WAIT_MS = 2000;
@@ -14,12 +15,13 @@ const GIF_WAIT_MS = 2000;
 // com `onEdit` é a prévia de quem criou: escolhe o GIF e usa os botões de baixo no lugar dos de cima;
 // `published` é a cena logo depois de finalizar, já com o compartilhar à mostra
 export async function createScene(scene, { onExit, onHome, onEdit, onPublish, published }) {
-  const { background, question, answer, reaction, theme } = await scene;
+  const { background, question, answer, reaction, theme, icons, icon } = await scene;
+  let iconId = icon;
   const stage = h('main', { className: 'stage' });
   const backdrop = createBackdrop(background);
   const toolbar = createToolbar({ onBack: !onEdit && back, onHome });
   const actions = onEdit && createActionBar({ className: 'scene-actions', next: 'Finalizar', onBack: onExit, onNext: onPublish });
-  const hero = createHero(question);
+  const hero = createHero(question, { onEdit: onEdit && icons && chooseIcon });
   const title = createTitle(question.title);
   const choices = createChoices({ yes: question.yes, no: question.no, reaction, onAccept: accept });
   const reward = createReward({ ...answer, reaction, onGif: onEdit && chooseGif });
@@ -72,6 +74,15 @@ export async function createScene(scene, { onExit, onHome, onEdit, onPublish, pu
     hero.set(question);
     title.set(question.title);
     ask();
+  }
+
+  async function chooseIcon() {
+    const icon = await pickIcon({ label: 'Ícone do cartão', icons, value: iconId });
+    if (!icon || icon.id === iconId) return;
+    iconId = icon.id;
+    Object.assign(question, { icon: icon.src, emoji: icon.emoji });
+    play(hero.swap(question));
+    onEdit({ icon: icon.id });
   }
 
   function chooseGif(gif) {

@@ -1,0 +1,32 @@
+.icon-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap:.6rem;
+  min-height:0;
+  padding:.4rem .4rem 1rem; /* folga pro anel do escolhido não ser cortado */
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+}
+.icon-grid::-webkit-scrollbar{display:none;}
+/* cada ícone no mesmo círculo do cartão, pra ver como fica */
+.icon-cell{
+  display:grid;
+  place-items:center;
+  aspect-ratio:1;
+  padding:0;
+  border:1.5px solid var(--hero-border);
+  border-radius:50%;
+  background:var(--hero-bg);
+  cursor:pointer;
+  -webkit-touch-callout:none;
+  transition:scale .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s ease;
+}
+.icon-cell img{display:block;width:100%;height:100%;pointer-events:none;}
+.icon-emoji{font-size:2.2rem;line-height:1;pointer-events:none;}
+.icon-cell[aria-pressed="true"]{box-shadow:0 0 0 3px var(--bg), 0 0 0 5.5px var(--accent);}
+@media (hover:hover){
+  .icon-cell:hover{scale:1.06;}
+}
+.icon-cell:active{scale:.92;}
+.icon-cell:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
