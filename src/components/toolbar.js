@@ -3,10 +3,18 @@ import { h } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
 import { shareLink } from '../lib/share.js';
 
-export function createToolbar({ onBack }) {
-  const back = createButton('back', 'Voltar', onBack);
+export function createToolbar({ onBack, onHome }) {
+  const back = onBack && createButton('back', 'Voltar', onBack);
+  const home = onHome && createButton('home', 'Início', onHome);
   const share = createButton('share', 'Compartilhar', shareScene);
-  const el = h('header', { className: 'toolbar' }, back.el, share.el);
+  const buttons = [back, home].filter(Boolean);
+  const el = h('header', { className: 'toolbar' },
+    h('div', { className: 'toolbar-nav' }, ...buttons.map(button => button.el)),
+    share.el);
+  const nav = {
+    enter: () => gsap.timeline().add(buttons.map((button, i) => button.enter().delay(i * 0.06)), 0),
+    leave: () => gsap.timeline().add(buttons.map(button => button.leave()), 0),
+  };
   let restore;
 
   async function shareScene() {
@@ -17,7 +25,7 @@ export function createToolbar({ onBack }) {
     restore = gsap.delayedCall(1.6, () => share.el.replaceChildren(icon('share')));
   }
 
-  return { el, back, share };
+  return { el, nav, share };
 }
 
 function createButton(name, label, onClick) {

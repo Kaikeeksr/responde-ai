@@ -44,6 +44,7 @@ const backdrop = (name, { portrait, landscape } = {}) => [
   landscape && image(asset(name, landscape), '(min-aspect-ratio: 1/1)'),
   portrait && image(asset(name, portrait), landscape && 'not all and (min-aspect-ratio: 1/1)'),
 ];
+const GIPHY = '<link rel="preconnect" href="https://api.giphy.com" crossorigin>';
 const sceneJSON = name => json(`assets/${name}/scene.json`);
 // a cena base (convite e editor) carrega também as cenas de onde vêm os fundos
 const withBackgrounds = name => [sceneJSON(name), ...(scenes.get(name).backgrounds ?? []).filter(b => b.scene).map(b => sceneJSON(b.scene))];
@@ -72,7 +73,7 @@ await route(`${EDITOR}.html`, [
 for (const [name, scene] of scenes) {
   const links = name === BASE
     // o convite é o link que as pessoas recebem: o GIF vem do GIPHY, então a conexão já sai aberta
-    ? [withBackgrounds(name), '<link rel="preconnect" href="https://api.giphy.com" crossorigin>']
-    : [sceneJSON(name), backdrop(name, scene.background), scene.question?.icon && image(asset(name, scene.question.icon))];
+    ? [withBackgrounds(name), GIPHY]
+    : [sceneJSON(name), backdrop(name, scene.background), scene.question?.icon && image(asset(name, scene.question.icon)), scene.answer?.gif && GIPHY];
   await route(`${name}.html`, links, scene.theme?.bg);
 }

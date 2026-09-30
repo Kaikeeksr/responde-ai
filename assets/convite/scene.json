@@ -13,6 +13,7 @@
   "backgrounds": [
     { "id": "ceu", "name": "Céu", "scene": "facetime", "color": "rosa" },
     { "id": "cinema", "name": "Cinema", "scene": "cinema", "color": "laranja" },
+    { "id": "coracoes", "name": "Corações", "scene": "bitoquinha", "color": "pink" },
     {
       "id": "rosa",
       "name": "Rosa",
@@ -23,7 +24,6 @@
       "id": "pessego",
       "name": "Pêssego",
       "color": "laranja",
-      "hidden": true,
       "theme": {
         "bg": "#fcdcc8",
         "hero-bg": "#f7cdb5",
@@ -155,6 +155,16 @@
         "accent-soft": "#ecc8cd",
         "accent-ink": "#5f2f3a",
         "confetti": "#f4a6b7, #e7b7bd, #c8b8dd, #b9a3e3, #ffd1dc"
+      }
+    },
+    {
+      "id": "pink",
+      "name": "Pink",
+      "theme": {
+        "accent": "#ef7f9b",
+        "accent-soft": "#f8b1c2",
+        "accent-ink": "#521a2c",
+        "confetti": "#ef7f9b, #f8b1c2, #ffd1dc, #fff4f6, #e65a7c"
       }
     },
     {

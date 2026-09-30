@@ -13,18 +13,18 @@ const GIF_WAIT_MS = 2000;
 
 // com `onEdit` é a prévia de quem criou: escolhe o GIF e usa os botões de baixo no lugar dos de cima;
 // `published` é a cena logo depois de finalizar, já com o compartilhar à mostra
-export async function createScene(scene, { onExit, onEdit, onPublish, published }) {
+export async function createScene(scene, { onExit, onHome, onEdit, onPublish, published }) {
   const { background, question, answer, reaction, theme } = await scene;
   const stage = h('main', { className: 'stage' });
   const backdrop = createBackdrop(background);
-  const toolbar = !onEdit && createToolbar({ onBack: back });
+  const toolbar = createToolbar({ onBack: !onEdit && back, onHome });
   const actions = onEdit && createActionBar({ className: 'scene-actions', next: 'Finalizar', onBack: onExit, onNext: onPublish });
   const hero = createHero(question);
   const title = createTitle(question.title);
   const choices = createChoices({ yes: question.yes, no: question.no, reaction, onAccept: accept });
   const reward = createReward({ ...answer, reaction, onGif: onEdit && chooseGif });
-  const frame = actions ? [actions] : published ? [toolbar.back, toolbar.share] : [toolbar.back];
-  const extras = toolbar && !published ? [toolbar.share] : [];
+  const frame = actions ? [toolbar.nav, actions] : published ? [toolbar.nav, toolbar.share] : [toolbar.nav];
+  const extras = !onEdit && !published ? [toolbar.share] : [];
   let current, resetTheme, gone;
 
   if (actions) actions.next.disabled = !answer.gif;
@@ -83,7 +83,7 @@ export async function createScene(scene, { onExit, onEdit, onPublish, published 
     enter() {
       resetTheme = applyTheme(theme);
       if (actions) root.dataset.actions = ''; // antes de medir a cena: reserva o espaço dos botões de baixo
-      body.append(backdrop.el, (actions || toolbar).el, stage);
+      body.append(backdrop.el, toolbar.el, ...(actions ? [actions.el] : []), stage);
       play(gsap.timeline()
         .from(backdrop.el, { autoAlpha: 0, duration: 0.6, ease: 'power1.out' })
         .add(frame.map(part => part.enter()), 0.3));
@@ -95,7 +95,7 @@ export async function createScene(scene, { onExit, onEdit, onPublish, published 
       await play(gsap.timeline()
         .add([...visibleParts(), ...frame].map(part => part.leave()))
         .to(backdrop.el, { autoAlpha: 0, duration: 0.45, ease: 'power1.in' }, 0.1));
-      for (const el of [backdrop.el, (actions || toolbar).el, stage]) el.remove();
+      for (const el of [backdrop.el, toolbar.el, actions?.el, stage]) el?.remove();
       delete body.dataset.phase;
       delete root.dataset.actions;
       resetTheme();
