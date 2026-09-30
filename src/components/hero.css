@@ -1,5 +1,15 @@
 /* .hero flutua com CSS; o GSAP anima só o .hero-circle, pra um não atropelar o outro */
-.hero{flex:none;width:var(--hero-size);height:var(--hero-size);}
+.hero{position:relative;flex:none;width:var(--hero-size);height:var(--hero-size);}
+/* o lápis fica na borda do círculo, embaixo à direita; na resposta não tem o que trocar */
+.hero-edit{
+  --icon-btn:clamp(2.1rem, calc(var(--hero-size) * .3), 2.6rem);
+  position:absolute;
+  right:0;
+  bottom:0;
+  z-index:1;
+  background:color-mix(in srgb, var(--bg) 85%, transparent);
+}
+[data-phase="answer"] .hero-edit{visibility:hidden;}
 .hero-circle{
   position:relative;
   width:100%;

@@ -9,6 +9,8 @@
   padding:0;
   border:none;
   display:grid;
+  /* sem isso a coluna cresce até o max-content do painel (grade de emojis) e passa da tela */
+  grid-template-columns:minmax(0, 1fr);
   align-items:end;
   justify-items:center;
   overflow:hidden;

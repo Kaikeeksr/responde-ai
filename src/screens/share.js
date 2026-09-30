@@ -97,7 +97,7 @@ export async function createShare(scene, { url = location.href, onExit, onHome, 
 }
 
 function createCard(question, answer) {
-  const thumb = h('span', { className: 'share-thumb' }, question.emoji);
+  const thumb = h('span', { className: 'share-thumb' }, question.icon ? h('img', { src: question.icon, alt: '' }) : question.emoji);
   if (answer.gif) findGif(answer.gif).then(({ thumb: { url }, title }) => {
     const img = h('img', { src: url, alt: title, decoding: 'async' });
     img.decode().then(() => thumb.replaceChildren(img), () => {});

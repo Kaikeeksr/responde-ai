@@ -24,6 +24,7 @@ const FIELDS = {
   reply: cut(MAX_LENGTH.reply),
   bg: validChoice,
   color: validChoice,
+  icon: validId,
 };
 
 export const fieldsOf = ({ question, answer, reaction, backgrounds }) => ({
@@ -53,12 +54,15 @@ export async function loadCustom(query) {
   const values = { ...fieldsOf(base), ...readQuery(query) };
   const backdrop = findBackground(backgrounds, values.bg);
   const color = findColor(colors, values.color ?? backdrop.color);
+  const icon = findOption(base.icons, values.icon);
   return {
     background: backdrop.background,
     theme: { ...backdrop.theme, ...color.theme },
-    question: { ...base.question, title: values.title, yes: values.yes, no: values.no },
+    question: { ...base.question, title: values.title, yes: values.yes, no: values.no, icon: icon.src, emoji: icon.emoji },
     answer: { ...base.answer, title: values.reply, emoji: values.emoji, gif: values.gif },
     reaction: values.reaction !== NO_REACTION && values.reaction,
+    icons: base.icons,
+    icon: icon.id,
   };
 }
 

@@ -1,7 +1,6 @@
 {
   "question": {
     "title": "Topa?",
-    "emoji": "💌",
     "yes": "Sim",
     "no": "Não"
   },
@@ -10,6 +9,18 @@
     "emoji": "😁"
   },
   "reaction": "💖",
+  "icons": [
+    { "id": "cartinha", "name": "Cartinha", "emoji": "💌" },
+    { "id": "bilhete", "name": "Bilhetinho", "src": "./icons/bilhete.svg" },
+    { "id": "camera", "name": "Câmera", "src": "../facetime/icon.svg" },
+    { "id": "beijinho", "name": "Beijinho", "src": "../bitoquinha/icon.svg" },
+    { "id": "pipoca", "name": "Pipoca", "src": "../cinema/icon.svg" },
+    { "id": "coracao", "name": "Coração", "src": "./icons/coracao.svg" },
+    { "id": "cafe", "name": "Cafezinho", "src": "./icons/cafe.svg" },
+    { "id": "pizza", "name": "Pizza", "src": "./icons/pizza.svg" },
+    { "id": "sorvete", "name": "Sorvete", "src": "./icons/sorvete.svg" },
+    { "id": "presente", "name": "Presente", "src": "./icons/presente.svg" }
+  ],
   "backgrounds": [
     { "id": "ceu", "name": "Céu", "scene": "facetime", "color": "rosa" },
     { "id": "cinema", "name": "Cinema", "scene": "cinema", "color": "laranja" },
